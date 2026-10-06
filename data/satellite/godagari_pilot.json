@@ -1,0 +1,22 @@
+{
+  "id": "godagari",
+  "lat": 24.47,
+  "lon": 88.33,
+  "rabi_rootzone_mean": 0.147,
+  "smap_rootzone_pctl": 35,
+  "smap_monthly": [
+    { "month": "2024-01", "rootzone": 0.176, "surface": 0.106 },
+    { "month": "2024-02", "rootzone": 0.155, "surface": 0.103 },
+    { "month": "2024-03", "rootzone": 0.139, "surface": 0.09 },
+    { "month": "2024-04", "rootzone": 0.118, "surface": 0.046 }
+  ],
+  "ndvi_series": [
+    { "date": "2024-01-01", "ndvi": 0.5251 },
+    { "date": "2024-01-17", "ndvi": 0.512 },
+    { "date": "2024-02-02", "ndvi": 0.498 },
+    { "date": "2024-03-02", "ndvi": 0.55 },
+    { "date": "2024-04-01", "ndvi": 0.58 }
+  ],
+  "source": "NASA AppEEARS SPL4SMGP.008 + MOD13Q1.061 (samples/appeears_bundle)",
+  "fallback": false
+}

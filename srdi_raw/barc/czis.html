@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Crop Zoning Information System - BARC</title>
+    <!-- <link rel="icon" type="image/x-icon" href="http://geo.iwmbd.com:8889/cz_assets/res/logo/barc.png"/> -->
+    <link rel="icon" type="image/x-icon" href='http://geo.iwmbd.com:8889/images/BARC-logo.png' />
+
+    <meta name="csrf-token" content="jHOlpeo3nU5NwGPvUaIfLZzsf9FXtd8R7Stvcgi3">
+    <script>window.Laravel = {csrfToken: 'jHOlpeo3nU5NwGPvUaIfLZzsf9FXtd8R7Stvcgi3'}</script>
+    <link href="http://geo.iwmbd.com:8889/css/app.css?v=55" rel="stylesheet"/>
+    <link href="http://geo.iwmbd.com:8889/cz_assets/css/style.css?v=55" rel="stylesheet"/>
+    <link href="http://geo.iwmbd.com:8889/cz_assets/css/czis-responsive.css?v=55" rel="stylesheet"/>
+    <script src="http://geo.iwmbd.com:8889/js/config.js?v=55"></script>
+    <script>
+        window.iwm = window.iwm ? iwm : {};
+    </script>
+      
+        <meta name="user-id" content="0" />
+     
+     
+</head>
+
+<style>
+    
+    #info {
+            position: absolute;
+            display: inline-block;
+            height: auto;
+            width: auto;
+            z-index: 100;
+            background-color: #222;
+            opacity: 0.7;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 0px 5px;
+            transform: translateX(3%) translateY(80%);
+            visibility: hidden;
+            pointer-events: none;
+      }
+
+      .custom-overlay {
+            cursor: pointer; /* Change to any desired cursor style */
+        }
+
+        #top-nav .navbar-nav {
+            align-items: center;
+        }
+        #top-nav .navbar-nav .nav-item {
+            display: flex;
+            align-items: center;
+        }
+        #top-nav .navbar-nav .nav-link.czis-nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.25rem 0.5rem;
+            line-height: 1;
+        }
+        #czisHomeLink {
+            color: #198754;
+        }
+        #czisHomeLink i {
+            font-size: 1.45rem;
+        }
+        #czisHomeLink:hover {
+            color: #157347;
+        }
+        #czisDashboardLink img {
+            width: 24px;
+            height: 24px;
+            display: block;
+        }
+
+        /* Map-only loading overlay */
+        #map {
+            position: relative;
+        }
+        .map-loader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .map-loader-content {
+            text-align: center;
+            color: #198754;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .map-loader-content #map-loader-text {
+            -webkit-text-stroke: 1px #ffffff;
+            paint-order: stroke fill;
+        }
+        .map-loader-spinner {
+            width: 42px;
+            height: 42px;
+            border: 3px solid #d4edda;
+            border-top-color: #198754;
+            border-radius: 50%;
+            animation: map-loader-spin 0.75s linear infinite;
+            margin: 0 auto 10px;
+            box-shadow: 0 0 0 2px #ffffff;
+        }
+        @keyframes  map-loader-spin {
+            to { transform: rotate(360deg); }
+        }
+
+      
+</style>
+
+
+<body>
+
+<div class="container-fluid" id="app">
+    <div id="banner-con">
+        <div id="myBanner" class=""
+             style="width:100%;height: 100%; background-image: url('http://geo.iwmbd.com:8889/cz_assets/res/image/back.png');">
+            <img alt="banner" src="http://geo.iwmbd.com:8889/cz_assets/res/image/banner3.png"
+                 style="max-width:100%; height:100%;margin-left:auto;margin-right:auto;display:block;"/>
+        </div>
+    </div>
+
+    <nav id="top-nav" class="navbar navbar-expand-sm navbar-light pt-1 pb-1 pr-1 bg-white">
+        <div class="d-flex align-items-center mr-2 czis-sidebar-toggles">
+            <button class="navbar-toggler mr-1" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="nav-link py-0 px-2 cursor-pointer czis-toggle-left" @click="toggleLeft" :title="isLeftShow ? 'Hide left menu' : 'Show left menu'">
+                <span class="fa fa-angle-double-right fa-1-5x" v-show="!isLeftShow"></span>
+                <span class="fa fa-angle-double-left fa-1-5x text-primary" v-show="isLeftShow"></span>
+            </a>
+            <a class="nav-link py-0 px-2 cursor-pointer czis-nav-icon" id="czisHomeLink" title="Crop Zoning Home" href="http://geo.iwmbd.com:4000/">
+                <i class="fa fa-home fa-1-5x" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse bg-white navbar pt-1 pb-1 pr-1" id="navbarSupportedContent"
+             style="z-index: 3;">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link cursor-pointer czis-nav-icon" id="czisDashboardLink" title="CZIS Home" href="/"><img src="http://geo.iwmbd.com:8889/images/czis_home_icon.png" alt="CZIS Home" style="border:1px solid #888888;" /></a>
+                </li>
+
+<!-- 
+                <li class="nav-item active">
+                    <a style="color:green" class="nav-link cursor-pointer" title="Map" @click="contentToShow='map'"><i class="fa fa-map fa-1-5x" aria-hidden="true"></i></a>
+                </li> -->
+
+                
+
+
+                
+
+                <li class="nav-item active">
+                    <a class="nav-link cursor-pointer"></a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link cursor-pointer"
+                       style="color: blue!important; font-weight: bold; font-size:1.3rem; padding: .25rem;"
+                       v-show="selectedUpazila.name" v-text="'Upazila: ' + selectedUpazila.name + ', ' + currentUpazila.distName "
+                       :title="selectedUpazila.code"></a>
+                </li>
+                <li class="nav-item active" id="upz-sol-count" style="color: black!important; font-weight: bold; font-size:1.2rem; padding-top: .42rem; margin-left:20px; display: none;">
+                    Total Point: 
+                </li>
+            </ul>
+
+            <div v-if="processing" class="mr-auto alert alert-info mb-0 px-2 py-1">
+                <span style="font-size: 1.1rem" class="font-weight-bold">Please Wait
+                    <i style="font-size: 1.4rem;" class="ml-2 fa fa-snowflake spinner"></i></span>
+            </div>
+
+            <div class="my-2 my-lg-0">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Authentication Links -->
+
+                    <li class="nav-item">
+                        <div class="container p-0">
+                            <div class="row pr-3">
+
+                                <div class="col pr-1">
+
+                                    <auto-complete
+                                        id="upazilaSearch"
+                                        placeholder="Upazila"
+                                        :source="getUrl"
+                                        input-class="form-control"
+                                        :results-display="formattedDisplay"
+                                        @selected="gotoUpazila"
+                                        name="name"
+                                        results-value="name">
+                                    </auto-complete>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
+
+                                            <li class="nav-item">
+                            <a class="nav-link" href="http://geo.iwmbd.com:8889/login">Login</a>
+                        </li>
+                        <!-- <li class="nav-item">
+                                                            <a class="nav-link" href="http://geo.iwmbd.com:8889/register">Register</a>
+                                                    </li> -->
+                                    </ul>
+            </div>
+
+        </div>
+        <div class="d-flex align-items-center ml-auto czis-toggle-right-wrap">
+            <a class="nav-link py-0 px-2 cursor-pointer czis-toggle-right" @click="toggleRight" :title="isRightShow ? 'Hide right menu' : 'Show right menu'">
+                <span class="fa fa-1-5x" :class="[isRightShow ? 'fa-angle-double-right text-primary' : 'fa-angle-double-left']"></span>
+            </a>
+        </div>
+    </nav>
+
+    
+        <div id="content" class="row">
+        <div id="rightSideBar" class="right-sidebar-panel border-left" style="width:400px;">
+
+    <ul class="nav nav-tabs mb-0 right-sidebar-tabs" id="right-pills-tab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home"
+                title="Suitability Analysis" role="tab" aria-controls="pills-home" aria-selected="true"><span
+                    class="fa fa-binoculars fa-1-5x"></span></a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" id="pills-crop-tab" data-toggle="pill" href="#pills-crop" role="tab" title="Crops"
+                aria-controls="pills-crop" aria-selected="false"><span class="fa fa-seedling fa-1-5x"></span></a>
+        </li>
+
+
+
+        
+
+        <li class="nav-item">
+            <a class="nav-link" id="pills-info-tab" data-toggle="pill" href="#pills-info" role="tab" title="Information"
+                aria-controls="pills-info" aria-selected="false">&nbsp;<span
+                    class="fa fa-info fa-1-5x"></span>&nbsp;</a>
+        </li>
+
+
+                <!-- <li class="nav-item">
+            <a class="nav-link" id="pills-unioninfo-tab" data-toggle="pill" href="#pills-unioninfo" role="tab"
+                title="Suitability" aria-controls="pills-unioninfo" aria-selected="false"><span
+                    class="fa fa-chart-bar fa-1-5x"></span></a>
+        </li> -->
+        
+
+
+
+
+
+        <li class="nav-item">
+            <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
+                title="Meta Data" aria-controls="pills-profile" aria-selected="false"><span
+                    class="fas fa-file-alt fa-1-5x"></span></a>
+        </li>
+
+        <!-- download tab -->
+        
+        <li class="nav-item">
+            <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab"
+                title="Contact" aria-controls="pills-contact" aria-selected="false"><span
+                    class="fa fa-envelope fa-1-5x"></span></a>
+        </li>
+    </ul>
+
+
+    <div class="tab-content py-1" id="pills-tabContent" style="padding-left: 0.1rem; padding-right: 0.1rem">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="accordion" id="edaphic">
+                <div class="card">
+                    <div class="card-header text-center text-white bg-danger cursor-pointer right-sidebar-card-header" data-toggle="collapse"
+                        data-target="#edaphicSuitability" aria-expanded="false" aria-controls="edaphicSuitability">
+                        <span class="fa fa-binoculars fa-fw mr-1"></span>Suitability Analysis
+                    </div>
+
+                    <div style="margin:10px; display:none;">
+                        <table>
+                            <tr>
+                                <td><span class="fa fa-map-marker-alt fa-fw mr-1"></span>Upazila:*</td>
+                                <td>
+                                    <input id="upazilaCode" name="upazilaCode" class="form-control"
+                                        placeholder="must enter upazila code" type="text" required
+                                        v-model="selectedUpazila.code">
+                                    <div class="text-danger" style="display: none">Upazila code is
+                                        required
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+
+                    <div id="edaphicSuitability" class="collapse show">
+                        <analysis></analysis>
+                    </div>
+                </div>
+
+                
+
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-upload" role="tabpanel" aria-labelledby="pills-contact-tab">
+            <div class="card">
+                            </div>
+
+            
+
+
+            <div class="card">
+                
+
+            </div>
+
+            
+
+
+        </div>
+
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <button id="framework" class="btn btn-block right-sidebar-btn btn-success"><span class="fa fa-sitemap fa-fw mr-2"></span>Framework</button>
+            <button id="process" class="btn btn-block right-sidebar-btn btn-info"><span class="fa fa-cogs fa-fw mr-2"></span>Process</button>
+            <button id="codes" class="btn btn-block right-sidebar-btn btn-warning"><span class="fa fa-code fa-fw mr-2"></span>Codes</button>
+            
+            
+            
+                        <button id="contacts" class="btn btn-block right-sidebar-btn btn-danger"><span class="fa fa-address-book fa-fw mr-2"></span>Contacts</button>
+            <!-- <button id="mobile" class="btn btn-block btn-secondary" @click="showMobile"><span
+                    class="fa fa-mobile-alt fa-2x"></span></button> -->
+            <!-- <button id="datasource" class="btn btn-block btn-info">Data Source</button> -->
+            <button id="metadataSeeAll" class="btn btn-block right-sidebar-btn btn-info"><span class="fa fa-database fa-fw mr-2"></span>Metadata</button>
+        </div>
+
+        <div class="tab-pane fade" id="pills-crop" role="tabpanel" aria-labelledby="pills-crop-tab">
+            <div class="card">
+                <div class="card-header text-center text-white bg-success cursor-pointer right-sidebar-card-header" data-toggle="collapse"
+                    data-target="#cropDrop" aria-expanded="false" aria-controls="cropDrop">
+                    <span class="fa fa-seedling fa-fw mr-1"></span>Drag & drop Crop Image on Map <br />for suitability analysis
+                </div>
+
+                <div class="card-body collapse px-2 py-3 show" id="cropDrop" style="padding: 0.2rem">
+                    <div id="image-div">
+                        <img id="1" class="pic" src="/cz_assets/res/crops/03_paddy_boro.jpg" alt="crop image"
+                                title="Boro (HYV)" draggable="true" ondragstart="drag(event)">
+                        <img id="3" class="pic" src="/cz_assets/res/crops/04_wheat.jpg" alt="crop image"
+                                title="Wheat (HYV)" draggable="true" ondragstart="drag(event)">
+                        <img id="6" class="pic" src="/cz_assets/res/crops/05_maize.jpg" alt="crop image" title="Maize"
+                                draggable="true" ondragstart="drag(event)">
+                        <img id="22" class="pic" src="/cz_assets/res/crops/07_mustard.jpg" alt="crop image"
+                                title="Mustard" draggable="true" ondragstart="drag(event)">
+                        <img id="12" class="pic" src="/cz_assets/res/crops/08_potato.jpg" alt="crop image" title="Potato"
+                                draggable="true" ondragstart="drag(event)">
+                        <img id="36" class="pic" src="/cz_assets/res/crops/09_pumpkin.jpg" alt="crop image"
+                                title="Pumpkin" draggable="true" ondragstart="drag(event)">
+
+
+                        <img id="61" class="pic" src="/cz_assets/res/crops/01_paddy_aus.jpg" alt="crop image"
+                                title="T. Aus (HYV)" draggable="true" ondragstart="drag(event)">
+                        <img id="75" class="pic" src="/cz_assets/res/crops/10_cucumber.jpg" alt="crop image"
+                                title="Cucumber" draggable="true" ondragstart="drag(event)">
+
+
+                        <img id="87" class="pic" src="/cz_assets/res/crops/02_paddy_aman.jpg" alt="crop image"
+                                title="T. Aman (HYV)" draggable="true" ondragstart="drag(event)">
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-suitability" role="tabpanel" aria-labelledby="pills-suitability-tab">
+            <div class="accordion" id="suitability">
+                <div class="card">
+                    <div class="card-header text-center text-white bg-danger cursor-pointer right-sidebar-card-header" data-toggle="collapse"
+                        data-target="#suitabilityInfo" aria-expanded="false" aria-controls="suitabilityInfo">
+                        <span class="fa fa-map-marked-alt fa-fw mr-1"></span>Upazila Shape file & Suitability Assessment
+                    </div>
+
+                    <div id="suitabilityInfo" class="collapse show">
+
+                        <!-- <div class="card w-100">
+                            <div class="text-center bg-secondary" id="dist-header2">
+                                <button class="btn btn-link text-white" type="button" data-toggle="collapse"
+                                        data-target="#collapse-dist2" aria-expanded="true" aria-controls="collapse-dist2">
+                                    Admin Location
+                                </button>
+                            </div>
+                            <div id="collapse-dist2" class="collapse" aria-labelledby="dist-header2"> -->
+                        <div class="card-body p-2">
+                            <table width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td><span class="fa fa-sitemap fa-fw mr-1"></span>Division:</td>
+                                        <td>
+                                            <select id="divisions2" class="form-control" style="width:100%">
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><span class="fa fa-map-marked-alt fa-fw mr-1"></span>District:</td>
+                                        <td>
+                                            <select id="districts2" class="form-control" style="width:100%"></select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><span class="fa fa-map-marker-alt fa-fw mr-1"></span>Upazila:</td>
+                                        <td>
+                                            <select @change="changeThana" id="thanas2" class="form-control"
+                                                style="width:100%"></select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <!-- </div>
+                        </div>                     -->
+
+                        <suitability-assessment></suitability-assessment>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="pills-rating" role="tabpanel" aria-labelledby="pills-rating-tab">
+            <div class="accordion" id="rating">
+                <div class="card">
+                    <div class="card-header text-center text-white bg-danger cursor-pointer right-sidebar-card-header" data-toggle="collapse"
+                        data-target="#ratingInfo" aria-expanded="false" aria-controls="ratingInfo">
+                        <span class="fa fa-star-half-alt fa-fw mr-1"></span>Suitability Rating
+                    </div>
+
+                    
+                    
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="tab-pane fade" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
+            <div class="accordion" >
+                <div class="card">
+                    <div class="card-header text-center text-white bg-success cursor-pointer right-sidebar-card-header" data-toggle="collapse"
+                        data-target="#cropInfo" aria-expanded="false" aria-controls="cropInfo">
+                        <span class="fa fa-info-circle fa-fw mr-1"></span>Information
+                    </div>
+
+                    <div id="cropInfo" class="collapse show">
+
+                        <div class="card-body p-2" >
+                        
+                            <div class="btn-block btn-group" role="group">
+                                <button id="croping-pattern-suite" class="btn w-100 info-item-button default-info-item">
+                                    Existing Cropping Pattern
+                                </button>
+                                
+                            </div>
+
+                            <div class="btn-block btn-group" role="group">
+                                <button id="union-profitable-crop" class="btn w-100  info-item-button">
+                                    Profitable Cropping Pattern
+                                </button>
+                            </div>
+
+                            <div class="btn-block btn-group" role="group">
+                                <button id="crop-zoning-suite" class="btn w-100  info-item-button">
+                                    Crop Zoning
+                                </button>
+                            </div>
+
+
+
+                            <div class="btn-block btn-group" role="group">
+                                <button id="union-fertilizer-recommendation" class="btn w-100   info-item-button">
+                                    Fertilizer Recommendation (Union based)
+                                </button>
+                            </div>
+
+                            <div class="btn-block btn-group" role="group">
+                                <button id="point-fertilizer-recommendation" class="btn w-100   info-item-button">
+                                    Fertilizer Recommendation (Point based)
+                                </button>
+                            </div>
+
+                            <div class="btn-block btn-group" role="group">
+                                <button id="crop-variety-list" class="btn w-100  info-item-button">
+                                    Crop Varieties
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div id="info-panel-crop-selection" class="card-body p-2">
+                            <information></information>
+                        </div>
+
+                        <div id="info-panel-point-selection" class="card-body pl-2 pr-2 pt-0 pb-0">
+                       
+                            <div class="form-group" >
+                                <div class="col-12">
+                                    <input type="checkbox" id="checkboxIconOnMap"> Enable Map Icon on Map
+                                </div>
+                                <div class="col-12">
+                                    <input type="number" class="form-control" id="latitude"  title="Latitude" placeholder="Latitude">
+                                </div>
+                                <div class="col-12">
+                                    <input type="number" class="form-control" id="longitude"  title="Longitude" placeholder="Longitude">
+                                </div>
+                                <div class="col-12">
+                                    <button id="show-on-map" class="btn info-item-button w-100">
+                                        Show on Map
+                                    </button> 
+                                </div>
+                
+                            </div>
+                        </div>
+
+
+                        <div id="info-panel-area-selection"  class="card-body p-2">
+                            <table width="100%">
+                                <tbody>
+                                    <tr>
+                                        <td><span class="fa fa-sitemap fa-fw mr-1"></span>Division:</td>
+                                        <td>
+                                            <select id="divisions3" class="form-control" style="width:100%">
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><span class="fa fa-map-marked-alt fa-fw mr-1"></span>District:</td>
+                                        <td>
+                                            <select id="districts3" class="form-control" style="width:100%"></select>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><span class="fa fa-map-marker-alt fa-fw mr-1"></span>Upazila:</td>
+                                        <td>
+                                            <select id="thanas3" class="form-control" style="width:100%"></select>
+                                        </td>
+                                    </tr>
+
+                                    <tr id = "info-union-tr">
+                                        <td><span class="fa fa-building fa-fw mr-1"></span>Union:</td>
+                                        <td>
+                                            <select id="union3" class="form-control" style="width:100%"></select>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <button id="show-info-button" class="btn w3-deep-purple w-100">
+                                    Show Info
+                        </button>
+
+                        <!-- <information></information> -->
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- <div class="tab-pane fade" id="pills-unioninfo" role="tabpanel" aria-labelledby="pills-unioninfo-tab">
+            <div class="accordion" id="unioninfo">
+                <div class="card">
+                    <div class="card-header text-center text-white bg-danger cursor-pointer" data-toggle="collapse"
+                        data-target="#unionInfo" aria-expanded="false" aria-controls="unionInfo">
+                        Suitability & Fertilizer
+                    </div>
+
+                    <div id="unionInfo" class="collapse show">
+                        Union based Suitability & Fertilizer
+
+                    </div>
+                </div>
+            </div>
+
+        </div> -->
+
+        <div class="tab-pane fade" id="pills-calculate" role="tabpanel" aria-labelledby="pills-calculate-tab">
+            <div class="card">
+                            </div>
+        </div>
+
+        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+            <div class="card">
+                <button id="feedback" class="card-header text-center text-white bg-info cursor-pointer right-sidebar-card-header"><span class="fa fa-paper-plane fa-fw mr-1"></span>Send Feedback</button>
+                <br />
+                 
+
+                <div class="card-header text-center text-white bg-success cursor-pointer right-sidebar-card-header" data-toggle="collapse"
+                    data-target="#contact" aria-expanded="false" aria-controls="contact">
+                    <span class="fa fa-phone-alt fa-fw mr-1"></span>Contact
+                </div>
+
+                <div class="card-body collapse px-2 py-3 show" id="contact" style="padding: 0.2rem">
+                    <div id="image-div">
+                        <div style="font-size:1.1em; line-height:30px;">
+                            <b>Hasan Md. Hamidur Rahman</b> <br />
+                            Director (Computer & GIS) <br />
+                            Bangladesh Agricultural Research Council (BARC) <br />
+                            <b>Email:</b> h.rahman@barc.gov.bd <br />
+                            <b>Phone:</b> 880-2-58152275 <br />
+
+                        </div>
+
+                    </div>
+                </div>
+
+  
+
+
+
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="pills-download" role="tabpanel" aria-labelledby="pills-download-tab">
+            <div class="card">
+                <div class="card-header text-center text-white bg-success cursor-pointer right-sidebar-card-header" data-toggle="collapse"
+                    data-target="#download" aria-expanded="false" aria-controls="download">
+                    <span class="fa fa-download fa-fw mr-1"></span>Downloads
+                </div>
+
+                <div class="card-body collapse px-2 py-3 show" id="download" style="padding: 0.2rem">
+                        <!-- download content -->
+                                    </div>
+            </div>
+        </div>
+        <div id="messageBar" class="row text-center col-md-12" style="color:red;"></div>
+
+        <!-- <div class="tab-pane p-1 fade" id="pills-user" role="tabpanel" aria-labelledby="pills-user-tab">
+                    </div> -->
+
+    </div>
+</div>
+
+
+        <div id="mapWrapper" class="row">
+            <div id="layer-con" class="layer-panel">
+                <div class="card w-100 layer-panel-card">
+                    <div class="text-center layer-panel-header layer-panel-header-location" id="dist-header">
+                        <button class="btn btn-link layer-panel-header-btn" type="button" data-toggle="collapse"
+                                data-target="#collapse-dist" aria-expanded="true" aria-controls="collapse-dist">
+                            <span class="fa fa-map-marker-alt fa-fw mr-1"></span>Admin Location
+                            <span class="layer-panel-chevron ml-auto"></span>
+                        </button>
+                    </div>
+                    <div id="collapse-dist" class="collapse" aria-labelledby="dist-header">
+                        <div class="card-body p-2">
+                            <table width="100%">
+                                <tbody>
+                                <tr>
+                                    <td>Division:</td>
+                                    <td>
+
+                                    <select id="divisions" class="form-control" style="width:100%">
+                                        <!-- <option selected="" disabled="" hidden="">Choose here</option>
+                                        <option value="10">Barishal</option>
+                                        <option value="20">Chattogram</option>
+                                        <option value="30">Dhaka</option>
+                                        <option value="40">Khulna</option>
+                                        <option value="50">Rajshahi</option>
+                                        <option value="55">Rangpur</option>
+                                        <option value="60">Sylhet</option> -->
+                                    </select>
+
+                                        <!-- <select id="divisions" class="form-control" style="width:100%">
+                                            <option selected="" disabled="" hidden="">Choose here</option>
+                                            <option value="Barisal">Barisal</option>
+                                            <option value="Chittagong">Chittagong</option>
+                                            <option value="Dhaka">Dhaka</option>
+                                            <option value="Khulna">Khulna</option>
+                                            <option value="Rajshahi">Rajshahi</option>
+                                            <option value="Rangpur">Rangpur</option>
+                                            <option value="Sylhet">Sylhet</option>
+                                        </select> -->
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>District:</td>
+                                    <td>
+                                        <select id="districts" class="form-control" style="width:100%"></select>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Upazila:</td>
+                                    <td>
+                                        <select @change="changeThana" id="thanas" class="form-control"
+                                                style="width:100%"></select>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="w-100">
+                    <div class="text-center layer-panel-header layer-panel-header-layers" id="header-layer">
+                        <button class="btn btn-link layer-panel-header-btn" type="button" data-toggle="collapse"
+                                data-target="#collapse-layer" aria-expanded="true" aria-controls="collapse-layer">
+                            <span class="fa fa-layer-group fa-fw mr-1"></span>Map Layers
+                            <span class="layer-panel-chevron ml-auto"></span>
+                        </button>
+                    </div>
+                    <div id="collapse-layer" class="collapse show" aria-labelledby="header-layer">
+                        <div id="layertree" class="layertree"></div>
+
+
+
+                        <!-- <div id="treeview_container" class="hummingbird-treeview well h-scroll-large">
+
+                            <ul id="treeview" class="hummingbird-base">
+
+                                <li><label> <input class="hummingbirdNoParent" id="node-1-2" data-id="custom-1-2" type="checkbox">node-1-2</label></li>
+
+                                <li><i class="fa fa-plus"></i> <label> <input id="node-1" data-id="custom-1" type="checkbox"> node-1</label>
+                                <ul>
+                                    <li><label> <input class="hummingbirdNoParent" id="node-1-1" data-id="custom-1-1" type="checkbox">
+                                        node-1-1</label>
+                                    </li>
+                                    <li><label> <input class="hummingbirdNoParent" id="node-1-2" data-id="custom-1-2" type="checkbox">
+                                        node-1-2</label>
+                                    </li>
+                                    <li><label> <input class="hummingbirdNoParent" id="node-1-3" data-id="custom-1-3" type="checkbox">
+                                        node-1-3</label>
+                                    </li>
+                                    <li><label> <input class="hummingbirdNoParent" id="node-1-4" data-id="custom-1-4" type="checkbox">
+                                        node-1-4</label>
+                                    </li>
+                                    <li><label> <input class="hummingbirdNoParent" id="node-1-5" data-id="custom-1-5" type="checkbox">
+                                        node-1-5</label>
+                                    </li>
+                                </ul>
+                                </li>
+
+                                <li><label> <input class="hummingbirdNoParent" id="node-1-3" data-id="custom-1-3" type="checkbox">node-1-3</label></li>
+
+
+                            </ul>
+                            </div> -->
+
+
+
+
+
+
+                    
+
+
+
+
+
+                    </div>
+                    <!-- <a id="export-png" class="btn" download="map.png"><i class="icon-download"></i> Export PNG</a> -->
+                </div>
+            </div>
+
+            <div id="visible-legends-panel" class="card d-block ml-1 mb-2" style="width:80px;">
+                <div class="card-header p-0">
+                    <div id="visible-legends-toggler" class="visible-legends-toggler btn btn-info py-0 px-1" title="Layer legends (show/hide)">
+                        <span class="fa fa-1-5x fa-list-alt"></span>
+                        <span class="fa fa-angle-double-up ml-1 visible-legends-chevron"></span>
+                    </div>
+                    <span class="pl-2 font-weight-bold visible-legends-title" style="display:none;">Visible Layer Legends</span>
+                </div>
+                <div id="visible-legends-content" class="card-body p-2" style="display:none;">
+                    <div id="visible-legends-list" class="visible-legends-list"></div>
+                    <div id="visible-legends-empty" class="text-muted small" style="display:none;">No visible layers with legends</div>
+                </div>
+            </div>
+            <upazila-status v-if="selectedUpazila.code"></upazila-status>
+            
+
+            <div id="cropSuiteName" v-show="isCropNameShow"><span v-html="cropName"></span>
+                <button type="button" class="close ml-2" style="font-size: 0.9rem" aria-label="Close"
+                        @click="isCropNameShow=false">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="" id="map-containter" v-show="contentToShow === 'map'">
+                <div id="toolbarWrap" class="row">
+                    <div id="toolbar" class="toolbar">
+                        
+                        
+                        
+                        
+                        
+                        
+
+                        <!-- <span id="coordinates" class="text-left float-right mr-1"></span> -->
+                        <!-- <a class="float-right mr-1" href="https://play.google.com/store/apps/details?id=barc.crop.khamari2" target="_blank"><span
+                                class="fa fa-mobile-alt fa-2x"></span></a> -->
+                        <!-- <button id="help" type="button" data-toggle="collapse" data-target="#collapsehelp"
+                                aria-expanded="false"
+                                aria-controls="collapsehelp"></button> -->
+                        <div class="collapse" id="collapsehelp">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="aria label">
+                                <button id="rule" onclick="location.href='/rule/details'" class="btn btn-danger">Crop
+                                    Limitation
+                                </button>
+                                <button id="framework" class="btn btn-success">Framework</button>
+                                <button id="process" class="btn btn-info">Process</button>
+                                
+                                <button id="codes" class="btn btn-warning">Codes</button>
+                                <button id="issues" class="btn btn-primary" onclick="location.href='/comment'">
+                                    Comments
+                                </button>
+                                
+                                <button id="contacts" class="btn btn-danger">Contacts</button>
+                                <button id="contacts" class="btn btn-secondary" @click="showMobile"><span
+                                        class="fa fa-mobile-alt fa-2x"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="map-wrapper"> 
+                <!-- <a id="export-png" class="btn" download="map.png"><i class="icon-download"></i> Export PNG</a> -->
+                    <div id="map" class="map" ondrop="Drop(event)" ondragover="DragOver(event)">
+                        <div id="map-loader" class="map-loader-overlay d-none" aria-live="polite" aria-busy="true">
+                            <div class="map-loader-content">
+                                <div class="map-loader-spinner"></div>
+                                <span id="map-loader-text">Updating map...</span>
+                            </div>
+                        </div>
+                        <div id="info"></div>
+                
+                    </div>
+
+                </div>
+
+                
+
+            </div>
+                    </div>
+
+<!-- Edit by ADS -->
+        <div id="status-bar" class="row">
+            <div  class="text-left col-md-3 mystatus" style="padding-right: 25px"> 
+            <span id="coordinates" ></span>
+                <!-- <a href="http://www.barc.gov.bd/">BARC </a>| 
+                <a href="http://www.srdi.gov.bd/">SRDI</a>| 
+                <a href="https://www.iwmbd.org/">IWM</a>    -->
+            </div>
+            <!-- <div id="messageBar" class="message-bar row text-center col-md-6"></div> -->
+            <!-- <div id="coordinates" class="text-left col-md-3"></div> -->
+        </div>
+<!-- ---- -->
+
+
+
+    </div>
+
+    <div id="status-bar"  class="row">
+            bottom footer
+    </div>
+    <!-- <a id="image-download" download="map.png"></a> -->
+    <a id="file-download" href="#"></a>
+    <input id="selectedLayers" type="hidden" value="int_bnd_bangladesh_poly,upazila_landtype," />
+
+    
+
+
+</div>
+
+<div id="msg">
+
+</div>
+
+<script>
+
+var CURRENT_UPZ = 'notselected';
+      
+</script>
+
+<div id="modalContainer" title="Data Entry Module" style="display:none;">
+    <span id="processingModalContent"><img src="http://geo.iwmbd.com:8889/images/loading-bar.gif" alt="submitting..." width="100" height="40" /> Loading...</span>
+    <iframe id="thedialog" width="100%" height="100%" ></iframe>
+</div>
+
+<script>
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+        ev.dataTransfer.setData("cropName", ev.target.title);
+    }
+
+    function DragOver(evt) {
+        evt.preventDefault();
+    }
+
+    function Drop(evt) {
+        iwm.cropID = evt.dataTransfer.getData("text");
+        iwm.cropName = evt.dataTransfer.getData('cropName');
+    }
+
+</script>
+
+
+<script
+  src="https://code.jquery.com/jquery-3.5.1.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+
+  <script src="http://geo.iwmbd.com:8889/js/app.js?v=61"></script>
+  <!-- <script src="http://geo.iwmbd.com:8889/cz_assets/js/access.js"></script> -->
+
+
+<script src="http://geo.iwmbd.com:8889/cz_assets/js/jquery/jquery-ui/jquery-ui.min.js"></script>
+<link href="http://geo.iwmbd.com:8889/cz_assets/js/jquery/jquery-ui/jquery-ui.min.css" rel="stylesheet"/>
+<script src="http://geo.iwmbd.com:8889/cz_assets/js/jquery/jquery.dialogextend.js"></script>
+
+<link href="http://geo.iwmbd.com:8889/plugins/treeview/hummingbird-treeview.css" rel="stylesheet"/>
+<script src="http://geo.iwmbd.com:8889/plugins/treeview/hummingbird-treeview.min.js"></script>
+
+
+
+
+
+
+<link href="http://geo.iwmbd.com:8889/cz_assets/js/ol/ol.css" rel="stylesheet"/>
+<script src="http://geo.iwmbd.com:8889/cz_assets/js/ol/ol.js"></script>
+<script src="http://geo.iwmbd.com:8889/js/map-loader.js?v=1"></script>
+<script src="http://geo.iwmbd.com:8889/cz_assets/js/app-folder/oliwm-1.2.js?v=58"></script>
+<!-- <script src="http://geo.iwmbd.com:8889/cz_assets/js/app-folder/oliwm-1.3.js?v=55"></script> -->
+<!-- <script src="http://geo.iwmbd.com:8889/cz_assets/js/app-folder/main.js?v=55"></script> -->
+<script src="http://geo.iwmbd.com:8889/cz_assets/js/app-folder/main_v2.js?v=65"></script>
+<script>
+(function() {
+    function collectVisibleWMSLayers(layers, parentVisible) {
+        var result = [];
+        if (!layers || !parentVisible) return result;
+        for (var i = 0; i < layers.getLength(); i++) {
+            var layer = layers.item(i);
+            if (!layer.getVisible()) continue;
+            if (layer instanceof ol.layer.Group) {
+                result = result.concat(collectVisibleWMSLayers(layer.getLayers(), true));
+            } else if (layer.get('url') && layer.get('ws') && layer.get('typeName')) {
+                result.push(layer);
+            }
+        }
+        return result;
+    }
+    function getLegendUrl(layer) {
+        var url = layer.get('url');
+        var ws = layer.get('ws');
+        var typeName = layer.get('typeName');
+        if (!url || !ws || !typeName) return '';
+        return url + 'wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=' + ws + ':' + typeName;
+    }
+    function updateVisibleLegends() {
+        var list = document.getElementById('visible-legends-list');
+        var empty = document.getElementById('visible-legends-empty');
+        if (!list || !empty) return;
+        if (!iwm || !iwm.map) {
+            list.innerHTML = '';
+            empty.style.display = 'block';
+            return;
+        }
+        var layers = collectVisibleWMSLayers(iwm.map.getLayers(), true);
+        list.innerHTML = '';
+        if (layers.length === 0) {
+            empty.style.display = 'block';
+            return;
+        }
+        empty.style.display = 'none';
+        layers.forEach(function(layer) {
+            var name = layer.get('name') || layer.get('typeName') || 'Layer';
+            var src = getLegendUrl(layer);
+            if (!src) return;
+            var div = document.createElement('div');
+            div.className = 'legend-item';
+            div.innerHTML = '<img src="' + src + '" alt="' + (name || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '"><span class="legend-name">' + (name || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>';
+            list.appendChild(div);
+        });
+    }
+    function addVisibilityListeners(layers) {
+        if (!layers) return;
+        for (var i = 0; i < layers.getLength(); i++) {
+            var layer = layers.item(i);
+            if (layer._visibleLegendsBound) continue;
+            layer._visibleLegendsBound = true;
+            layer.on('change:visible', function() { updateVisibleLegends(); });
+            if (layer instanceof ol.layer.Group) addVisibilityListeners(layer.getLayers());
+        }
+    }
+    function initVisibleLegendsPanel() {
+        var panel = document.getElementById('visible-legends-panel');
+        var toggler = document.getElementById('visible-legends-toggler');
+        var content = document.getElementById('visible-legends-content');
+        var title = panel && panel.querySelector('.visible-legends-title');
+        var chevron = panel && panel.querySelector('.visible-legends-chevron');
+        if (!panel || !toggler || !content) return;
+        toggler.addEventListener('click', function() {
+            var show = content.style.display !== 'none';
+            content.style.display = show ? 'none' : 'block';
+            panel.style.width = show ? '80px' : 'fit-content';
+            if (title) title.style.display = show ? 'none' : 'inline';
+            if (chevron) {
+                chevron.className = 'fa ml-1 visible-legends-chevron ' + (show ? 'fa-angle-double-up' : 'fa-angle-double-down');
+            }
+            if (!show) updateVisibleLegends();
+        });
+        if (iwm && iwm.map) {
+            addVisibilityListeners(iwm.map.getLayers());
+            iwm.map.getLayers().on('add', function(evt) {
+                if (evt.element instanceof ol.layer.Group) {
+                    addVisibilityListeners(evt.element.getLayers());
+                } else if (evt.element.get('url')) {
+                    evt.element._visibleLegendsBound = true;
+                    evt.element.on('change:visible', updateVisibleLegends);
+                }
+                updateVisibleLegends();
+            });
+            iwm.map.on('rendercomplete', updateVisibleLegends);
+            updateVisibleLegends();
+        }
+    }
+    window.updateVisibleLegends = updateVisibleLegends;
+    window.addEventListener('load', function() {
+        if (iwm && iwm.map) initVisibleLegendsPanel();
+        else setTimeout(function() { if (iwm && iwm.map) initVisibleLegendsPanel(); }, 500);
+    });
+})();
+</script>
+<!-- <script src="http://geo.iwmbd.com:8889/cz_assets/js/app-folder/layersDefMainLatest.js?v=55"></script> -->
+<script src="http://geo.iwmbd.com:8889/cz_assets/js/app-folder/layersDefMainLatest_v2.js?v=55"></script>
+<!-- <script src="http://geo.iwmbd.com:8889/cz_assets/js/app-folder/layersDefMainLatest_v3.js?v=55"></script> -->
+<script src="http://geo.iwmbd.com:8889/cz_assets/js/highcharts/highcharts-6.1.4.js"></script>
+<script src="http://geo.iwmbd.com:8889/cz_assets/js/others/FileSaver.min.js"></script>
+
+
+
+<script>
+    $("#treeview").hummingbird();
+    $("#checkAll").click(function () {
+      $("#treeview").hummingbird("checkAll");
+    });
+    $("#uncheckAll").click(function () {
+      $("#treeview").hummingbird("uncheckAll");
+    });
+    $("#collapseAll").click(function () {
+      $("#treeview").hummingbird("collapseAll");
+    });
+    $("#checkNode").click(function () {
+      $("#treeview").hummingbird("checkNode", { attr: "id", name: "node-0-2-2", expandParents: false });
+    });
+  </script>
+  
+<script>
+    $(function() {
+        iwm.selectedLayerList = '';
+        // function onMyFrameLoad() {
+        //     //alert('myframe is loaded');
+        //     $("#processingModalContent").hide();
+        // };
+
+        $("#thedialog").on('load', function () {
+            console.log('#thedialog loaded');
+            $("#processingModalContent").hide();
+        });
+
+        //cument.getElementById('thedialog').src = "data:text/html;charset=utf-8," + escape('Loading....');
+        //$('#thedialog').contents().find('html').html("loading.......")
+
+        $("#openDataEntry").on('click', function () {
+
+            let loadUrl = '/dataentry/division';
+            $("#thedialog").attr('src', loadUrl);
+            $("#modalContainer").dialog({
+                width: '80%',
+                height: ($(window).height() - 200),
+                modal: true,
+                position: {
+                    my: "center center",
+                    at: "center center",
+                    within: $(".map")
+                },
+                modal: true,
+                close: function () {
+                    $("#thedialog").attr('src', "about:blank");
+                }
+            });
+            return false;
+            
+
+
+            $('#modalContainer').dialog({
+                title: 'Data Entry: ',
+                width: '60%',
+                height: ($(window).height() - 200),
+                modal: true,
+                position: {
+                    my: "center center",
+                    at: "center center",
+                    within: $(".map")
+                },
+                beforeClose: function (event, ui) {
+                    $('#modalContainer').html('');
+                },
+            });
+
+
+
+        });
+
+
+
+        // $("#openDataEntry").click(function () {
+        //     //alert('ads ss');
+
+        //     var w = 1050;
+        //     var h = screen.height - 200;
+        //     var title = 'Crop List';
+        //     var url = '/dataentry/dataentry' ;
+        //     //var left = (screen.width/2)-(w/2);
+        //     //var top = (screen.height/2)-(h/2);
+        //     var left = (screen.width-w)/2;
+        //     var top = 100;
+        //     window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+    
+
+        // });  
+          //$('div#title').parent().html($(this).text()).remove();
+
+        $('#group_2 #layer_21 input[type="checkbox"]').change(function () {
+            if(this.checked) {
+                //alert(iwm.bdMouzaBnd.getVisible());
+                // visibleBox.checked = layer.getVisible();
+                //iwm.bdMouzaBnd.setVisible(true);
+                // iwm.bdUnionBnd.setVisible(true);
+                // iwm.bdUpzaliBndBarc.setVisible(true);
+                // iwm.bdIntBoundarySob.setVisible(true);
+
+                var checks = document.querySelectorAll('#group_2 input[type="checkbox"]');
+                for(var i =0; i< checks.length;i++){
+                    var check = checks[i];
+                    //console.log('check value:' + check.value);
+                    if(i > 0 && !check.disabled){
+                        //console.log('checked value:' + check.value);
+                        console.log(check.checked);
+                        if(check.checked){
+                            console.log('checked value (layer name):' + check.value);
+                            switch(check.value){
+                                case 'int_bnd_bangladesh_poly':
+                                    iwm.bdIntBoundarySob.setVisible(true);
+                                    break;
+                                case 'upazila_boundary_barc':
+                                    iwm.bdUpzaliBndBarc.setVisible(true);
+                                    break;
+                                case 'union_boundary_en':
+                                    iwm.bdUnionBnd.setVisible(true);
+                                    break;
+                                case 'mauza_boundary_barc_new':
+                                    iwm.bdMouzaBnd.setVisible(true);
+                                    break;
+
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+            }else{
+                iwm.bdMouzaBnd.setVisible(false);
+                iwm.bdUnionBnd.setVisible(false);
+                iwm.bdUpzaliBndBarc.setVisible(false);
+                iwm.bdIntBoundarySob.setVisible(false);
+            }
+
+        });
+
+        $('#group_1 #layer_8 input[type="checkbox"]').change(function () {
+            if(this.checked) {
+                var checks = document.querySelectorAll('#group_1 input[type="checkbox"]');
+                for(var i =0; i< checks.length;i++){
+                    var check = checks[i];
+                    //console.log('check value:' + check.value);
+                    if(i > 0 && !check.disabled){
+                        //console.log('checked value:' + check.value);
+                        console.log(check.checked);
+                        if(check.checked){
+                            console.log('checked value (layer name):' + check.value);
+                            switch(check.value){
+                                case 'upazila_landtype':
+                                    iwm.landType.setVisible(true);
+                                    break;
+                                case 'upazila_soil_texture':
+                                    iwm.edaphic_soil_texture.setVisible(true);
+                                    break;
+                                case 'upazila_soil_consistency':
+                                    iwm.edaphic_cosintency.setVisible(true);
+                                    break;
+                                case 'upazila_soil_drainage':
+                                    iwm.edaphic_drainage.setVisible(true);
+                                    break;
+                                case 'upazila_soil_reaction':
+                                    iwm.edaphic_reaction.setVisible(true);
+                                    break;
+                                case 'upazila_soil_moisture':
+                                    iwm.edaphic_moisture.setVisible(true);
+                                    break;
+                                case 'upazila_soil_salinity':
+                                    iwm.edaphic_salinity.setVisible(true);
+                                    break;
+                                case 'upazila_soil_recession':
+                                    iwm.edaphic_waterrecession.setVisible(true);
+                                    break;
+                                case 'upazila_soil_relief':
+                                    iwm.edaphic_relief.setVisible(true);
+                                    break;
+
+                            }
+                        }
+                    }
+                }
+
+            }else{
+                iwm.landType.setVisible(false);
+                iwm.edaphic_soil_texture.setVisible(false);
+                iwm.edaphic_cosintency.setVisible(false);
+                iwm.edaphic_drainage.setVisible(false);
+                iwm.edaphic_reaction.setVisible(false);
+                iwm.edaphic_moisture.setVisible(false);
+                iwm.edaphic_salinity.setVisible(false);
+                iwm.edaphic_waterrecession.setVisible(false);
+                iwm.edaphic_relief.setVisible(false);
+            }
+
+        });
+
+        $('#group_0 #layer_3 input[type="checkbox"]').change(function () {
+            if(this.checked) {
+                var checks = document.querySelectorAll('#group_0 input[type="checkbox"]');
+                for(var i =0; i< checks.length;i++){
+                    var check = checks[i];
+                    //console.log('check value:' + check.value);
+                    if(i > 0 && !check.disabled){
+                        //console.log('checked value:' + check.value);
+                        console.log(check.checked);
+                        if(check.checked){
+                            console.log('checked value (layer name):' + check.value);
+                            switch(check.value){
+                                case 'acz_pre_kharif_transition':
+                                    iwm.acz_p.setVisible(true);
+                                    break;
+                                case 'acz_kharif_rabi':
+                                    iwm.acz_k.setVisible(true);
+                                    break;
+                                case 'acz_cool_winter':
+                                    iwm.acz_t.setVisible(true);
+                                    break;
+                                case 'acz_hot_summer':
+                                    iwm.acz_e.setVisible(true);
+                                    break;
+
+                            }
+                        }
+                    }
+                }
+
+            }else{
+                iwm.acz_p.setVisible(false);
+                iwm.acz_k.setVisible(false);
+                iwm.acz_t.setVisible(false);
+                iwm.acz_e.setVisible(false);
+            }
+
+        });
+
+
+        // $(".layer .ol-unselectable").on('click', function (evn) {
+        //     console.log('check value:');
+        //     console.log(evn);    
+        // });
+
+
+
+    });
+
+
+    // var checks = document.querySelectorAll('#' + gpId + ' input[type="checkbox"]');
+    // // //bdMouzaBnd.setVisible(false);
+    // // for(var i =0; i< checks.length;i++){
+    // //     var check = checks[i];
+    // //     console.log('check value:' + check.value);
+    // //     if(!check.disabled){
+    // //         check.checked = true;
+    // //     }
+    // // }
+
+    // // $("#openDataEntry").on('click', function () {
+
+    // // });
+    // $('#group_2  input[type="checkbox"]').change(function () {
+    //     //alert('changed');
+    //     bdMouzaBnd.setVisible(false);
+
+    // });
+
+
+</script>
+
+
+</body>
+</html>

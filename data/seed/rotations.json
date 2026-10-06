@@ -1,0 +1,77 @@
+{
+  "rotations": [
+    {
+      "rotation_id": "R1",
+      "name": "Boro – Fallow – T.Aman",
+      "seasons": {
+        "rabi": { "crop": "boro", "months": "Dec–May" },
+        "kharif1": { "crop": "fallow", "months": "Mar–Jun" },
+        "kharif2": { "crop": "t_aman", "months": "Jul–Nov" }
+      }
+    },
+    {
+      "rotation_id": "R2",
+      "name": "Mustard – Boro – T.Aman",
+      "_note": "Short mustard before Boro in the dry season sequence.",
+      "seasons": {
+        "rabi": { "crop": "mustard", "months": "Nov–Feb" },
+        "kharif1": { "crop": "boro", "months": "Mar–Jun" },
+        "kharif2": { "crop": "t_aman", "months": "Jul–Nov" }
+      }
+    },
+    {
+      "rotation_id": "R3",
+      "name": "Lentil – Fallow – T.Aman",
+      "seasons": {
+        "rabi": { "crop": "lentil", "months": "Nov–Feb" },
+        "kharif1": { "crop": "fallow", "months": "Mar–Jun" },
+        "kharif2": { "crop": "t_aman", "months": "Jul–Nov" }
+      }
+    },
+    {
+      "rotation_id": "R4",
+      "name": "Lentil – Mungbean – T.Aman",
+      "seasons": {
+        "rabi": { "crop": "lentil", "months": "Nov–Feb" },
+        "kharif1": { "crop": "mungbean", "months": "Mar–May" },
+        "kharif2": { "crop": "t_aman", "months": "Jul–Nov" }
+      }
+    },
+    {
+      "rotation_id": "R5",
+      "name": "Mustard – Fallow – T.Aman",
+      "seasons": {
+        "rabi": { "crop": "mustard", "months": "Nov–Feb" },
+        "kharif1": { "crop": "fallow", "months": "Mar–Jun" },
+        "kharif2": { "crop": "t_aman", "months": "Jul–Nov" }
+      }
+    },
+    {
+      "rotation_id": "R6",
+      "name": "Wheat – Mungbean – T.Aman",
+      "seasons": {
+        "rabi": { "crop": "wheat", "months": "Nov–Mar" },
+        "kharif1": { "crop": "mungbean", "months": "Mar–May" },
+        "kharif2": { "crop": "t_aman", "months": "Jul–Nov" }
+      }
+    },
+    {
+      "rotation_id": "R7",
+      "name": "Chickpea – Fallow – T.Aman",
+      "seasons": {
+        "rabi": { "crop": "chickpea", "months": "Nov–Mar" },
+        "kharif1": { "crop": "fallow", "months": "Mar–Jun" },
+        "kharif2": { "crop": "t_aman", "months": "Jul–Nov" }
+      }
+    },
+    {
+      "rotation_id": "R8",
+      "name": "Maize – Fallow – T.Aman",
+      "seasons": {
+        "rabi": { "crop": "maize", "months": "Nov–Apr" },
+        "kharif1": { "crop": "fallow", "months": "Mar–Jun" },
+        "kharif2": { "crop": "t_aman", "months": "Jul–Nov" }
+      }
+    }
+  ]
+}

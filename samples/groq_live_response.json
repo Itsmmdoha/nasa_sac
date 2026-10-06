@@ -1,0 +1,200 @@
+{
+  "tested_at_local": "2026-10-01 13:35 +06",
+  "model": "openai/gpt-oss-120b",
+  "http_status": 200,
+  "latency_s": 3.76,
+  "rate_limit_headers": {
+    "x-ratelimit-limit-requests": "1000",
+    "x-ratelimit-limit-tokens": "8000",
+    "x-ratelimit-remaining-requests": "999",
+    "x-ratelimit-remaining-tokens": "6135",
+    "x-ratelimit-reset-requests": "1m26.4s",
+    "x-ratelimit-reset-tokens": "13.987s"
+  },
+  "schema_valid": true,
+  "model_returned": "openai/gpt-oss-120b",
+  "usage": {
+    "queue_time": 0.246745051,
+    "prompt_tokens": 1595,
+    "prompt_time": 0.088573217,
+    "completion_tokens": 1582,
+    "completion_time": 3.340977477,
+    "total_tokens": 3177,
+    "total_time": 3.429550694,
+    "completion_tokens_details": {
+      "reasoning_tokens": 101
+    }
+  },
+  "finish_reason": "stop",
+  "content": {
+    "location": {
+      "upazila": "Tanore",
+      "union": "Kalma"
+    },
+    "summary": "Start with a lentil crop, then let the field lie fallow before planting T. Aman. If you prefer a less profitable but very water‑saving option, grow mustard after fallow and finish with T. Aman. Keep the current Boro–Fallow–T.Aman pattern only as a fallback.",
+    "data_caveats": [
+      "Rainfall data are long‑term normals and may vary year to year.",
+      "Fallow periods assume no crop residue removal.",
+      "Irrigation numbers are estimates based on typical crop water needs."
+    ],
+    "not_recommended": [],
+    "rotations": [
+      {
+        "rank": 1,
+        "rotation_id": "R3",
+        "name": "Lentil – Fallow – T.Aman",
+        "seasons": {
+          "kharif1": {
+            "crop": "lentil",
+            "months": "Nov–Feb"
+          },
+          "kharif2": {
+            "crop": "fallow",
+            "months": "Mar–Jun"
+          },
+          "rabi": {
+            "crop": "t_aman",
+            "months": "Jul–Oct"
+          }
+        },
+        "scores": {
+          "overall": 78,
+          "water": 90,
+          "soil_health": 82,
+          "profit": 61,
+          "climate_risk": 74
+        },
+        "water_use": {
+          "irrigation_mm": 105,
+          "change_vs_current_pct": -89,
+          "note": "Uses 89% less irrigation than the current Boro system."
+        },
+        "soil_health_effect": {
+          "direction": "improves",
+          "explanation": "Lentil adds nitrogen and breaks disease cycles, boosting soil health."
+        },
+        "reasons": [
+          "Overall score 78 is highest among candidates.",
+          "Water score 90 and irrigation drop of 89% match the farmer's limited water priority.",
+          "Soil health score 82 aligns with the soil‑health priority (4).",
+          "FRS recommends 54 kg Urea ha⁻¹, 108 kg TSP ha⁻¹ and 50 kg MOP ha⁻¹ for lentil, supporting balanced nutrition."
+        ],
+        "risks": [
+          {
+            "risk": "Lentil may need timely rain during the early growth stage.",
+            "mitigation": "Use the limited irrigation budget to apply a small pulse at sowing."
+          }
+        ],
+        "confidence": {
+          "level": "high",
+          "uncertainty_note": "Scores are based on region‑wide data and match the farmer's water constraint."
+        }
+      },
+      {
+        "rank": 2,
+        "rotation_id": "R5",
+        "name": "Mustard – Fallow – T.Aman",
+        "seasons": {
+          "kharif1": {
+            "crop": "mustard",
+            "months": "Nov–Feb"
+          },
+          "kharif2": {
+            "crop": "fallow",
+            "months": "Mar–Jun"
+          },
+          "rabi": {
+            "crop": "t_aman",
+            "months": "Jul–Oct"
+          }
+        },
+        "scores": {
+          "overall": 72,
+          "water": 93,
+          "soil_health": 60,
+          "profit": 55,
+          "climate_risk": 70
+        },
+        "water_use": {
+          "irrigation_mm": 80,
+          "change_vs_current_pct": -92,
+          "note": "Reduces irrigation by 92% compared with the current Boro rotation."
+        },
+        "soil_health_effect": {
+          "direction": "neutral",
+          "explanation": "Mustard provides modest organic matter but does not fix nitrogen."
+        },
+        "reasons": [
+          "Water score 93 and a 92% irrigation cut meet the top water priority.",
+          "Overall 72 is above the baseline and profit 55 is acceptable for a medium budget.",
+          "Climate risk 70 indicates good resilience to the local rain pattern.",
+          "Mustard can be sold locally, matching the farmer's market options."
+        ],
+        "risks": [
+          {
+            "risk": "Mustard yields drop if the brief rabi rain is below normal.",
+            "mitigation": "Apply a light supplemental irrigation early in the season."
+          }
+        ],
+        "confidence": {
+          "level": "medium",
+          "uncertainty_note": "Profit is modest and depends on market price for mustard."
+        }
+      },
+      {
+        "rank": 3,
+        "rotation_id": "R1",
+        "name": "Boro – Fallow – T.Aman",
+        "seasons": {
+          "kharif1": {
+            "crop": "boro",
+            "months": "Nov–Feb"
+          },
+          "kharif2": {
+            "crop": "fallow",
+            "months": "Mar–Jun"
+          },
+          "rabi": {
+            "crop": "t_aman",
+            "months": "Jul–Oct"
+          }
+        },
+        "scores": {
+          "overall": 50,
+          "water": 20,
+          "soil_health": 40,
+          "profit": 70,
+          "climate_risk": 45
+        },
+        "water_use": {
+          "irrigation_mm": 950,
+          "change_vs_current_pct": 0,
+          "note": "No change in irrigation compared with the farmer's current practice."
+        },
+        "soil_health_effect": {
+          "direction": "degrades",
+          "explanation": "Continuous rice depletes organic matter and raises salinity risk on imperfectly drained soils."
+        },
+        "reasons": [
+          "Profit score 70 is highest, fitting the farmer's profit focus.",
+          "Overall score 50 is lowest; water score 20 shows high irrigation demand.",
+          "Soil health score 40 and degradation note warn of long‑term soil decline."
+        ],
+        "risks": [
+          {
+            "risk": "High water use may exceed the farmer's limited water supply.",
+            "mitigation": "Consider supplemental rainwater harvesting for the Boro season."
+          },
+          {
+            "risk": "Soil health may decline on the clay loam with imperfect drainage.",
+            "mitigation": "Apply the recommended 100 kg lime ha⁻¹ and incorporate crop residues."
+          }
+        ],
+        "confidence": {
+          "level": "low",
+          "uncertainty_note": "Water and soil health scores are poor for the given constraints."
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "tier": 1,
+  "error": null,
+  "params": {
+    "dates": [
+      {
+        "endDate": "04-30-2024",
+        "startDate": "01-01-2024"
+      }
+    ],
+    "layers": [
+      {
+        "layer": "Geophysical_Data_sm_rootzone",
+        "product": "SPL4SMGP.008"
+      },
+      {
+        "layer": "Geophysical_Data_sm_surface",
+        "product": "SPL4SMGP.008"
+      },
+      {
+        "layer": "_250m_16_days_NDVI",
+        "product": "MOD13Q1.061"
+      },
+      {
+        "layer": "NDVI",
+        "product": "HLSL30_VI.020"
+      }
+    ],
+    "coordinates": [
+      {
+        "id": "godagari",
+        "category": "pilot",
+        "latitude": 24.47,
+        "longitude": 88.33
+      }
+    ]
+  },
+  "status": "processing",
+  "created": "2026-10-01T04:59:34.382602",
+  "task_id": "badb84d5-84b9-410c-bd13-e9b119b5faf5",
+  "updated": "2026-10-01T05:01:09.949089",
+  "user_id": "<redacted: Earthdata account email>",
+  "estimate": {
+    "request_size": 370,
+    "request_tier": 0,
+    "request_memory": 1
+  },
+  "retry_at": null,
+  "has_swath": false,
+  "task_name": "fieldshift-godagari-test",
+  "task_type": "point",
+  "api_version": "v1",
+  "svc_version": "3.130",
+  "web_version": null,
+  "has_nsidc_daac": true,
+  "expires_on": "2026-10-31T05:01:09.949089",
+  "attempts": 1,
+  "cluster_processing": true
+}

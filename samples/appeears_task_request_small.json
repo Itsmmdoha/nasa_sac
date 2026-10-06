@@ -1,0 +1,30 @@
+{
+  "task_type": "point",
+  "task_name": "fieldshift-godagari-smap-modis",
+  "params": {
+    "dates": [
+      {
+        "startDate": "11-01-2023",
+        "endDate": "04-30-2024"
+      }
+    ],
+    "layers": [
+      {
+        "product": "SPL4SMGP.008",
+        "layer": "Geophysical_Data_sm_rootzone"
+      },
+      {
+        "product": "MOD13Q1.061",
+        "layer": "_250m_16_days_NDVI"
+      }
+    ],
+    "coordinates": [
+      {
+        "id": "godagari",
+        "category": "pilot",
+        "latitude": 24.47,
+        "longitude": 88.33
+      }
+    ]
+  }
+}

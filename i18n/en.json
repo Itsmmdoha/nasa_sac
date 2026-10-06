@@ -1,0 +1,56 @@
+{
+  "appTitle": "Field Shift",
+  "tagline": "Crop rotation advice for the Barind tract",
+  "nav": {
+    "home": "Get advice",
+    "results": "Results",
+    "data": "Data behind this",
+    "about": "About"
+  },
+  "form": {
+    "upazila": "Upazila",
+    "union": "Union",
+    "lastRabi": "Last Rabi season crop (Nov–Mar)",
+    "lastK1": "Last Kharif-1 crop (Mar–Jun)",
+    "lastK2": "Last Kharif-2 crop (Jul–Oct)",
+    "budget": "Input budget",
+    "water": "Irrigation access",
+    "canSell": "Crops you can sell",
+    "priorityProfit": "Profit priority",
+    "prioritySoil": "Soil health priority",
+    "priorityWater": "Water saving priority",
+    "submit": "Get advice"
+  },
+  "budget": { "low": "Low", "medium": "Medium", "high": "High" },
+  "water": {
+    "none": "None",
+    "limited": "Limited (shared pump)",
+    "reliable": "Reliable",
+    "plenty": "Plenty"
+  },
+  "seasons": {
+    "rabi": "Rabi (Nov–Mar)",
+    "kharif1": "Kharif-1 (Mar–Jun)",
+    "kharif2": "Kharif-2 (Jul–Oct)"
+  },
+  "results": {
+    "title": "Your top rotations",
+    "current": "Your current pattern",
+    "notRecommended": "Not recommended",
+    "yourArea": "Your area",
+    "aiExplanation": "AI explanation",
+    "ruleBased": "Rule-based ranking (AI unavailable)",
+    "mockData": "Mock data",
+    "loading": "Scoring rotations and preparing advice…"
+  },
+  "data": {
+    "title": "Data behind this recommendation",
+    "climate": "Climate (NASA POWER)",
+    "soil": "Soil (SRDI)",
+    "satellite": "Soil moisture & greenness (NASA SMAP / MODIS)",
+    "notAvailable": "not available"
+  },
+  "about": {
+    "title": "How Field Shift works"
+  }
+}

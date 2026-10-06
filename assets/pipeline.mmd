@@ -1,0 +1,29 @@
+%%{init: {"flowchart": {"wrappingWidth": 280, "nodeSpacing": 30, "rankSpacing": 40}} }%%
+flowchart TB
+    subgraph IN[" Inputs "]
+        direction LR
+        P["<b>NASA POWER</b><br/>rain · temperature · soil wetness"]
+        S["<b>AppEEARS</b><br/>SMAP soil moisture · NDVI"]
+        R["<b>SRDI soil data</b><br/>pH · OM · nutrients · land type"]
+        F["<b>Farmer form</b><br/>past crops · budget · water<br/>market · priorities"]
+    end
+    C["<b>Fetch & cache</b><br/>season climate summaries"]
+    SC["<b>Rule-based scorer</b><br/>crops → candidate rotations"]
+    L["<b>Groq LLM</b><br/>gpt-oss-120b · strict JSON schema<br/>rank · explain"]
+    V["<b>Validate</b><br/>keep the scorer's numbers"]
+    D["<b>Dashboard</b><br/>top 3 rotations + data"]
+    P --> C
+    S --> C
+    C --> SC
+    R --> SC
+    F --> SC
+    SC --> L --> V --> D
+    classDef nasa fill:#e8f0fe,stroke:#0b3d91,color:#0b1f44
+    classDef local fill:#eaf6ec,stroke:#2e7d32,color:#12321a
+    classDef step fill:#ffffff,stroke:#555,color:#111
+    classDef llm fill:#fff4e5,stroke:#e08600,color:#3d2600
+    class P,S nasa
+    class R,F local
+    class C,SC,V,D step
+    class L llm
+    style IN fill:#fafbfd,stroke:#c9d3e6

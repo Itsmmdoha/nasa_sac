@@ -1,0 +1,285 @@
+{
+  "type": "object",
+  "properties": {
+    "location": {
+      "type": "object",
+      "properties": {
+        "upazila": {
+          "type": "string"
+        },
+        "union": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "upazila",
+        "union"
+      ],
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "string",
+      "description": "Two or three plain sentences a farmer can follow."
+    },
+    "rotations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "description": "1, 2 or 3 (checked in code)."
+          },
+          "rotation_id": {
+            "type": "string",
+            "description": "Must be one of the candidate ids sent in the prompt."
+          },
+          "name": {
+            "type": "string",
+            "description": "e.g. 'Mustard – Boro – T.Aman'"
+          },
+          "seasons": {
+            "type": "object",
+            "properties": {
+              "rabi": {
+                "type": "object",
+                "properties": {
+                  "crop": {
+                    "type": "string",
+                    "description": "Crop id from the candidate list, or 'fallow'."
+                  },
+                  "months": {
+                    "type": "string",
+                    "description": "Sowing to harvest, e.g. 'Nov–Feb'."
+                  }
+                },
+                "required": [
+                  "crop",
+                  "months"
+                ],
+                "additionalProperties": false
+              },
+              "kharif1": {
+                "type": "object",
+                "properties": {
+                  "crop": {
+                    "type": "string",
+                    "description": "Crop id from the candidate list, or 'fallow'."
+                  },
+                  "months": {
+                    "type": "string",
+                    "description": "Sowing to harvest, e.g. 'Nov–Feb'."
+                  }
+                },
+                "required": [
+                  "crop",
+                  "months"
+                ],
+                "additionalProperties": false
+              },
+              "kharif2": {
+                "type": "object",
+                "properties": {
+                  "crop": {
+                    "type": "string",
+                    "description": "Crop id from the candidate list, or 'fallow'."
+                  },
+                  "months": {
+                    "type": "string",
+                    "description": "Sowing to harvest, e.g. 'Nov–Feb'."
+                  }
+                },
+                "required": [
+                  "crop",
+                  "months"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "rabi",
+              "kharif1",
+              "kharif2"
+            ],
+            "additionalProperties": false
+          },
+          "scores": {
+            "type": "object",
+            "properties": {
+              "overall": {
+                "type": "integer",
+                "description": "0–100"
+              },
+              "water": {
+                "type": "integer",
+                "description": "0–100"
+              },
+              "soil_health": {
+                "type": "integer",
+                "description": "0–100"
+              },
+              "profit": {
+                "type": "integer",
+                "description": "0–100"
+              },
+              "climate_risk": {
+                "type": "integer",
+                "description": "0–100, higher = safer"
+              }
+            },
+            "required": [
+              "overall",
+              "water",
+              "soil_health",
+              "profit",
+              "climate_risk"
+            ],
+            "additionalProperties": false,
+            "description": "Copied from the scorer input. The backend overwrites these with the scorer's values."
+          },
+          "water_use": {
+            "type": "object",
+            "properties": {
+              "irrigation_mm": {
+                "type": "number"
+              },
+              "change_vs_current_pct": {
+                "type": "number"
+              },
+              "note": {
+                "type": "string",
+                "description": "One short sentence."
+              }
+            },
+            "required": [
+              "irrigation_mm",
+              "change_vs_current_pct",
+              "note"
+            ],
+            "additionalProperties": false
+          },
+          "soil_health_effect": {
+            "type": "object",
+            "properties": {
+              "direction": {
+                "type": "string",
+                "enum": [
+                  "improves",
+                  "neutral",
+                  "degrades"
+                ]
+              },
+              "explanation": {
+                "type": "string",
+                "description": "One or two short sentences."
+              }
+            },
+            "required": [
+              "direction",
+              "explanation"
+            ],
+            "additionalProperties": false
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "2–4 short reasons that cite input values."
+          },
+          "risks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "risk": {
+                  "type": "string"
+                },
+                "mitigation": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "risk",
+                "mitigation"
+              ],
+              "additionalProperties": false
+            },
+            "description": "0–3 risks."
+          },
+          "confidence": {
+            "type": "object",
+            "properties": {
+              "level": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "uncertainty_note": {
+                "type": "string",
+                "description": "One sentence."
+              }
+            },
+            "required": [
+              "level",
+              "uncertainty_note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "rank",
+          "rotation_id",
+          "name",
+          "seasons",
+          "scores",
+          "water_use",
+          "soil_health_effect",
+          "reasons",
+          "risks",
+          "confidence"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Exactly 3 items, best first (checked in code)."
+    },
+    "not_recommended": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rotation_id": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string",
+            "description": "One sentence."
+          }
+        },
+        "required": [
+          "rotation_id",
+          "why"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "data_caveats": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Up to 4 short caveats."
+    }
+  },
+  "required": [
+    "location",
+    "summary",
+    "rotations",
+    "not_recommended",
+    "data_caveats"
+  ],
+  "additionalProperties": false
+}

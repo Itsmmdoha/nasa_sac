@@ -1,0 +1,38 @@
+{
+  "task_type": "point",
+  "task_name": "fieldshift-godagari-test",
+  "params": {
+    "dates": [
+      {
+        "startDate": "01-01-2024",
+        "endDate": "04-30-2024"
+      }
+    ],
+    "layers": [
+      {
+        "product": "SPL4SMGP.008",
+        "layer": "Geophysical_Data_sm_rootzone"
+      },
+      {
+        "product": "SPL4SMGP.008",
+        "layer": "Geophysical_Data_sm_surface"
+      },
+      {
+        "product": "MOD13Q1.061",
+        "layer": "_250m_16_days_NDVI"
+      },
+      {
+        "product": "HLSL30_VI.020",
+        "layer": "NDVI"
+      }
+    ],
+    "coordinates": [
+      {
+        "id": "godagari",
+        "category": "pilot",
+        "latitude": 24.47,
+        "longitude": 88.33
+      }
+    ]
+  }
+}

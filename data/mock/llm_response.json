@@ -1,0 +1,156 @@
+{
+  "location": {
+    "upazila": "Tanore",
+    "union": "Kalma"
+  },
+  "summary": "MOCK: Lentil after Aman saves most of the Boro irrigation water and adds nitrogen. Mustard is the lowest-water option. Keep Boro only if you have reliable pump water.",
+  "rotations": [
+    {
+      "rank": 1,
+      "rotation_id": "R3",
+      "name": "Lentil – Fallow – T.Aman",
+      "seasons": {
+        "rabi": {
+          "crop": "lentil",
+          "months": "Nov–Feb"
+        },
+        "kharif1": {
+          "crop": "fallow",
+          "months": "Mar–Jun"
+        },
+        "kharif2": {
+          "crop": "t_aman",
+          "months": "Jul–Nov"
+        }
+      },
+      "scores": {
+        "overall": 78,
+        "water": 90,
+        "soil_health": 82,
+        "profit": 61,
+        "climate_risk": 74
+      },
+      "water_use": {
+        "irrigation_mm": 105,
+        "change_vs_current_pct": -89,
+        "note": "Mock value; the scorer fills the real number."
+      },
+      "soil_health_effect": {
+        "direction": "improves",
+        "explanation": "Lentil fixes nitrogen; soil OM is 1.70%, which is low."
+      },
+      "reasons": [
+        "Soil pH 6.2 suits lentil.",
+        "Normal Rabi rain is only 31 mm, so replacing Boro saves water."
+      ],
+      "risks": [
+        {
+          "risk": "Late sowing pushes flowering into February heat.",
+          "mitigation": "Sow by mid-November."
+        }
+      ],
+      "confidence": {
+        "level": "medium",
+        "uncertainty_note": "MOCK response for offline development; not model output."
+      }
+    },
+    {
+      "rank": 2,
+      "rotation_id": "R5",
+      "name": "Mustard – Fallow – T.Aman",
+      "seasons": {
+        "rabi": {
+          "crop": "mustard",
+          "months": "Nov–Feb"
+        },
+        "kharif1": {
+          "crop": "fallow",
+          "months": "Mar–Jun"
+        },
+        "kharif2": {
+          "crop": "t_aman",
+          "months": "Jul–Nov"
+        }
+      },
+      "scores": {
+        "overall": 72,
+        "water": 93,
+        "soil_health": 60,
+        "profit": 55,
+        "climate_risk": 70
+      },
+      "water_use": {
+        "irrigation_mm": 80,
+        "change_vs_current_pct": -92,
+        "note": "Mock value; the scorer fills the real number."
+      },
+      "soil_health_effect": {
+        "direction": "neutral",
+        "explanation": "No legume, but no puddling for Boro either."
+      },
+      "reasons": [
+        "Lowest irrigation need of the candidates.",
+        "Mustard sells locally."
+      ],
+      "risks": [],
+      "confidence": {
+        "level": "medium",
+        "uncertainty_note": "MOCK response for offline development; not model output."
+      }
+    },
+    {
+      "rank": 3,
+      "rotation_id": "R1",
+      "name": "Boro – Fallow – T.Aman",
+      "seasons": {
+        "rabi": {
+          "crop": "boro",
+          "months": "Jan–May"
+        },
+        "kharif1": {
+          "crop": "fallow",
+          "months": "Mar–Jun"
+        },
+        "kharif2": {
+          "crop": "t_aman",
+          "months": "Jul–Nov"
+        }
+      },
+      "scores": {
+        "overall": 50,
+        "water": 20,
+        "soil_health": 40,
+        "profit": 70,
+        "climate_risk": 45
+      },
+      "water_use": {
+        "irrigation_mm": 950,
+        "change_vs_current_pct": 0,
+        "note": "Mock value; the scorer fills the real number."
+      },
+      "soil_health_effect": {
+        "direction": "degrades",
+        "explanation": "Rice–rice with puddling; no legume break."
+      },
+      "reasons": [
+        "Highest profit if pump water is reliable.",
+        "Current pattern; no new skills needed."
+      ],
+      "risks": [
+        {
+          "risk": "Falling groundwater in Barind.",
+          "mitigation": "Use AWD irrigation."
+        }
+      ],
+      "confidence": {
+        "level": "high",
+        "uncertainty_note": "MOCK response for offline development; not model output."
+      }
+    }
+  ],
+  "not_recommended": [],
+  "data_caveats": [
+    "This is the offline mock (MOCK_LLM=1).",
+    "Climate is from a ~50 km POWER grid."
+  ]
+}
