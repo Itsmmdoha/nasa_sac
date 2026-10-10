@@ -8,6 +8,7 @@ import {
   scorerFallbackAdvice,
   type RotationAdvice,
 } from "./advice";
+import type { AdviceLang } from "./advice-copy";
 import { dataPath } from "./paths";
 import { SYSTEM_PROMPT } from "./prompt";
 import type { ScoredCandidate, UnionSoilProfile } from "./types";
@@ -85,15 +86,22 @@ export async function getAdvice(
   payload: object,
   candidates: ScoredCandidate[],
   location: { upazila: string; union: string },
-  soil: UnionSoilProfile
-): Promise<{ advice: RotationAdvice; source: AdviceSource; fallback_reason?: FallbackReason }> {
+  soil: UnionSoilProfile,
+  lang: AdviceLang = "en"
+): Promise<{
+  advice: RotationAdvice;
+  source: AdviceSource;
+  fallback_reason?: FallbackReason;
+  advice_lang: AdviceLang;
+}> {
   const hash = cacheKey("llm", payload);
   const cached = readCache<RotationAdvice>(hash);
   if (cached) {
     const top3 = cached.rotations.map((r) => r.rotation_id);
     return {
-      advice: mergeAdvice(cached, candidates, top3),
+      advice: mergeAdvice(cached, candidates, top3, lang),
       source: "cache",
+      advice_lang: lang,
     };
   }
 
@@ -103,18 +111,20 @@ export async function getAdvice(
     mock.location = location;
     const top3 = mock.rotations.map((r) => r.rotation_id);
     return {
-      advice: mergeAdvice(mock, candidates, top3),
+      advice: mergeAdvice(mock, candidates, top3, "en"),
       source: "mock",
       fallback_reason: "MOCK_LLM",
+      advice_lang: "en",
     };
   }
 
   if (!hasGroqKey()) {
     logFallback("NO_GROQ_API_KEY");
     return {
-      advice: scorerFallbackAdvice(location, candidates, soil),
+      advice: scorerFallbackAdvice(location, candidates, soil, lang),
       source: "scorer",
       fallback_reason: "NO_GROQ_API_KEY",
+      advice_lang: lang,
     };
   }
 
@@ -143,9 +153,10 @@ export async function getAdvice(
     writeCache(hash, raw);
     const top3 = raw.rotations.map((r) => r.rotation_id);
     return {
-      advice: mergeAdvice(raw, candidates, top3),
+      advice: mergeAdvice(raw, candidates, top3, lang),
       source: "groq",
       fallback_reason: reason,
+      advice_lang: lang,
     };
   } catch (e) {
     const status = errorStatus(e);
@@ -153,9 +164,10 @@ export async function getAdvice(
       status === 429 ? "RATE_LIMIT" : status === 400 ? "SCHEMA_ERROR" : "GROQ_ERROR";
     logFallback(reason, status ? `HTTP ${status}` : String(e));
     return {
-      advice: scorerFallbackAdvice(location, candidates, soil),
+      advice: scorerFallbackAdvice(location, candidates, soil, lang),
       source: "scorer",
       fallback_reason: reason,
+      advice_lang: lang,
     };
   }
 }

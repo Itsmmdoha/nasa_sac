@@ -10,6 +10,8 @@ import { getUnion } from "@/lib/unions";
 
 export async function POST(req: Request) {
   const body = await req.json();
+  const lang = body?.lang === "bn" ? "bn" : "en";
+  if (body && typeof body === "object") delete body.lang;
   const parsed = farmerInputSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
@@ -32,12 +34,20 @@ export async function POST(req: Request) {
     lat: u.lat,
     lon: u.lon,
   };
-  const payload = buildLlmPayload(location, soil, climate, farmer, scored.candidates);
-  const { advice, source, fallback_reason } = await getAdvice(
+  const payload = buildLlmPayload(
+    location,
+    soil,
+    climate,
+    farmer,
+    scored.candidates,
+    lang
+  );
+  const { advice, source, fallback_reason, advice_lang } = await getAdvice(
     payload,
     scored.candidates,
     { upazila: farmer.upazila, union: farmer.union },
-    soil
+    soil,
+    lang
   );
 
   return NextResponse.json({
@@ -48,6 +58,7 @@ export async function POST(req: Request) {
       baseline_irrigation_mm: scored.baseline_irrigation_mm,
       current_rotation_id: scored.current_rotation_id,
       candidates_sent: scored.candidates.length,
+      advice_lang,
     },
     context: {
       soil,

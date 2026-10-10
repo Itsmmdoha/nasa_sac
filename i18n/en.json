@@ -1,6 +1,15 @@
 {
   "appTitle": "Field Shift",
   "tagline": "Crop rotation advice for the Barind tract",
+  "lang": {
+    "switch": "Language",
+    "en": "EN",
+    "bn": "বাংলা"
+  },
+  "langName": {
+    "en": "English",
+    "bn": "Bangla"
+  },
   "nav": {
     "home": "Get advice",
     "results": "Results",
@@ -19,7 +28,10 @@
     "priorityProfit": "Profit priority",
     "prioritySoil": "Soil health priority",
     "priorityWater": "Water saving priority",
-    "submit": "Get advice"
+    "submit": "Get advice",
+    "loadError": "Could not load unions",
+    "requestFailed": "Request failed",
+    "failed": "Failed"
   },
   "budget": { "low": "Low", "medium": "Medium", "high": "High" },
   "water": {
@@ -33,6 +45,73 @@
     "kharif1": "Kharif-1 (Mar–Jun)",
     "kharif2": "Kharif-2 (Jul–Oct)"
   },
+  "crops": {
+    "boro": "Boro",
+    "t_aman": "T. Aman",
+    "wheat": "Wheat",
+    "maize": "Maize",
+    "mustard": "Mustard",
+    "lentil": "Lentil",
+    "chickpea": "Chickpea",
+    "mungbean": "Mungbean",
+    "potato": "Potato",
+    "fallow": "Fallow"
+  },
+  "sell": {
+    "rice": "Rice",
+    "mustard": "Mustard",
+    "lentil": "Lentil",
+    "wheat": "Wheat",
+    "maize": "Maize",
+    "pulse": "Pulse",
+    "potato": "Potato"
+  },
+  "scores": {
+    "overall": "Overall",
+    "water": "Water",
+    "soil_health": "Soil health",
+    "profit": "Profit",
+    "climate_risk": "Climate risk"
+  },
+  "direction": {
+    "improves": "Improves",
+    "neutral": "Neutral",
+    "degrades": "Degrades"
+  },
+  "confidence": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "places": {
+    "upazila": {
+      "Godagari": "Godagari",
+      "Tanore": "Tanore"
+    },
+    "union": {
+      "Basudebpur": "Basudebpur",
+      "Char Ashariadaha": "Char Ashariadaha",
+      "Deopara": "Deopara",
+      "Godagari": "Godagari",
+      "Gogram": "Gogram",
+      "Matikata": "Matikata",
+      "Mohanpur": "Mohanpur",
+      "Pakri": "Pakri",
+      "Rishikul": "Rishikul",
+      "Badhair": "Badhair",
+      "Chanduria": "Chanduria",
+      "Kalma": "Kalma",
+      "Kamargaon": "Kamargaon",
+      "Pachandar": "Pachandar",
+      "Saranjai": "Saranjai",
+      "Talanda": "Talanda"
+    }
+  },
+  "waterChange": {
+    "same": "Same water as now",
+    "less": "{pct}% less water than your current rotation",
+    "more": "{pct}% more water than your current rotation"
+  },
   "results": {
     "title": "Your top rotations",
     "current": "Your current pattern",
@@ -41,16 +120,68 @@
     "aiExplanation": "AI explanation",
     "ruleBased": "Rule-based ranking (AI unavailable)",
     "mockData": "Mock data",
-    "loading": "Scoring rotations and preparing advice…"
+    "loading": "Scoring rotations and preparing advice…",
+    "empty": "No results yet.",
+    "langMismatch": "These sentences are in {from}. Press Get advice again for {to}.",
+    "soilEffect": "Soil",
+    "risk": "Risk",
+    "confidence": "Confidence",
+    "irrigationTotal": "~{mm} mm irrigation (rotation total)",
+    "reasons": {
+      "MOCK_LLM": "MOCK_LLM=1 in environment",
+      "NO_GROQ_API_KEY": "No GROQ_API_KEY in .env.local",
+      "RATE_LIMIT": "Groq rate limit or server error",
+      "SCHEMA_ERROR": "Response did not match schema",
+      "GROQ_ERROR": "Groq request failed"
+    }
+  },
+  "area": {
+    "srdi": "SRDI soil",
+    "ph": "pH",
+    "organicMatter": "Organic matter",
+    "phosphorus": "P",
+    "ec": "EC",
+    "texture": "Texture",
+    "landType": "Land type",
+    "drainage": "Drainage",
+    "power": "NASA POWER",
+    "rainNormal": "Rain (normal)",
+    "recentVsAverage": "recent vs average",
+    "tmax": "Mean Tmax (normal)",
+    "smap": "SMAP / NDVI (cached)",
+    "nearest": "Nearest cached NASA point for this union.",
+    "rabiMoisture": "Rabi root-zone moisture",
+    "ndvi": "Latest NDVI"
   },
   "data": {
     "title": "Data behind this recommendation",
     "climate": "Climate (NASA POWER)",
     "soil": "Soil (SRDI)",
     "satellite": "Soil moisture & greenness (NASA SMAP / MODIS)",
-    "notAvailable": "not available"
+    "notAvailable": "not available",
+    "rabiRain": "Normal Rabi rain",
+    "phMedian": "pH (median)",
+    "organicMatter": "Organic matter",
+    "texture": "Texture",
+    "landType": "Land type",
+    "samples": "Samples",
+    "nearest": "Using nearest cached NASA point for this union.",
+    "rabiMoisture": "Rabi mean root-zone moisture",
+    "source": "Source",
+    "chartRain": "Normal rain (mm)",
+    "chartTmax": "Tmax normal °C",
+    "chartRoot": "Root zone m³/m³",
+    "chartSurface": "Surface m³/m³"
   },
   "about": {
-    "title": "How Field Shift works"
+    "title": "How Field Shift works",
+    "lead": "Field Shift combines NASA POWER climate, SMAP soil moisture, MODIS greenness, and SRDI soil surveys to score crop rotations in code, then uses a Groq-hosted model to rank and explain the top options.",
+    "scores": "Numbers always come from the scorer; the model does not invent scores.",
+    "sourcesTitle": "Data sources",
+    "sourcePower": "NASA POWER — rainfall, temperature, soil wetness",
+    "sourceAppeears": "NASA AppEEARS — SMAP L4 moisture, MODIS NDVI",
+    "sourceSrdi": "SRDI via BARC Crop Zoning — soil samples, land units, FRS doses",
+    "sourceBarc": "BARC suitability — crop zoning from SRDI land data",
+    "pipelineAlt": "Pipeline diagram"
   }
 }

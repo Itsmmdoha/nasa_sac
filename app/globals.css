@@ -18,14 +18,13 @@
   --color-text-body: var(--text-body);
   --color-text-title: var(--text-title);
   --color-surface-card: var(--surface-card);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-noto);
 }
 
 body {
   background: var(--surface-page);
   color: var(--text-body);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-noto), "Noto Sans Bengali", sans-serif;
 }
 
 .text-body {

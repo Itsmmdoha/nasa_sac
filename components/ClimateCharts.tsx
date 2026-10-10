@@ -13,7 +13,13 @@ import {
   YAxis,
 } from "recharts";
 
-export function RainChart({ data }: { data: { month: string; mm: number }[] }) {
+export function RainChart({
+  data,
+  name = "Normal rain (mm)",
+}: {
+  data: { month: string; mm: number }[];
+  name?: string;
+}) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <BarChart data={data}>
@@ -21,13 +27,19 @@ export function RainChart({ data }: { data: { month: string; mm: number }[] }) {
         <XAxis dataKey="month" tick={{ fontSize: 10 }} />
         <YAxis tick={{ fontSize: 10 }} />
         <Tooltip />
-        <Bar dataKey="mm" fill="#047857" name="Normal rain (mm)" />
+        <Bar dataKey="mm" fill="#047857" name={name} />
       </BarChart>
     </ResponsiveContainer>
   );
 }
 
-export function TmaxChart({ data }: { data: { month: string; c: number }[] }) {
+export function TmaxChart({
+  data,
+  name = "Tmax normal °C",
+}: {
+  data: { month: string; c: number }[];
+  name?: string;
+}) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <LineChart data={data}>
@@ -36,7 +48,7 @@ export function TmaxChart({ data }: { data: { month: string; c: number }[] }) {
         <YAxis tick={{ fontSize: 10 }} />
         <Tooltip />
         <ReferenceLine y={35} stroke="#dc2626" strokeDasharray="4 4" label="35°C" />
-        <Line type="monotone" dataKey="c" stroke="#b45309" name="Tmax normal °C" dot={false} />
+        <Line type="monotone" dataKey="c" stroke="#b45309" name={name} dot={false} />
       </LineChart>
     </ResponsiveContainer>
   );
@@ -44,8 +56,12 @@ export function TmaxChart({ data }: { data: { month: string; c: number }[] }) {
 
 export function SmapChart({
   data,
+  rootLabel = "Root zone m³/m³",
+  surfaceLabel = "Surface m³/m³",
 }: {
   data: { month: string; rootzone: number; surface: number }[];
+  rootLabel?: string;
+  surfaceLabel?: string;
 }) {
   return (
     <ResponsiveContainer width="100%" height={220}>
@@ -54,8 +70,8 @@ export function SmapChart({
         <XAxis dataKey="month" tick={{ fontSize: 10 }} />
         <YAxis tick={{ fontSize: 10 }} domain={[0, 0.5]} />
         <Tooltip />
-        <Line type="monotone" dataKey="rootzone" stroke="#0369a1" name="Root zone m³/m³" />
-        <Line type="monotone" dataKey="surface" stroke="#7c3aed" name="Surface m³/m³" />
+        <Line type="monotone" dataKey="rootzone" stroke="#0369a1" name={rootLabel} />
+        <Line type="monotone" dataKey="surface" stroke="#7c3aed" name={surfaceLabel} />
       </LineChart>
     </ResponsiveContainer>
   );

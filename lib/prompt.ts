@@ -1,3 +1,4 @@
+import type { AdviceLang } from "./advice-copy";
 import type { ClimateSummary, FarmerInput, ScoredCandidate, UnionSoilProfile } from "./types";
 
 export const SYSTEM_PROMPT = `You are an agronomy assistant for smallholder farmers in the Barind tract, Bangladesh.
@@ -12,6 +13,8 @@ Rules:
 - Mention fertilizer or lime only from the SRDI FRS figures provided.
 - Lower your confidence when the data is coarse: POWER is ~50 km, SMAP is 9 km, the soil survey date is unknown.
 - Write short, plain sentences a farmer or extension officer can read aloud.
+- Write every prose field in the language named by response_language. "bn" means Bangla. "en" means English. Prose fields are summary, name, reasons, risk, mitigation, water_use.note, soil_health_effect.explanation, confidence.uncertainty_note, not_recommended.why, and data_caveats.
+- Keep rotation_id, crop ids, and enums in English. soil_health_effect.direction must be improves, neutral, or degrades. confidence.level must be low, medium, or high.
 Never change seasons, crop ids, or numeric scores in your output; the server overwrites them from the scorer.
 Return JSON matching the schema.`;
 
@@ -20,9 +23,11 @@ export function buildLlmPayload(
   soil: UnionSoilProfile,
   climate: ClimateSummary,
   farmer: FarmerInput,
-  candidates: ScoredCandidate[]
+  candidates: ScoredCandidate[],
+  responseLanguage: AdviceLang = "en"
 ) {
   return {
+    response_language: responseLanguage,
     location,
     soil: {
       ph_median: soil.ph_median,

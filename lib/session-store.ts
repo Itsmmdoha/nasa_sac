@@ -1,3 +1,5 @@
+import type { AdviceLang } from "./advice-copy";
+
 export const SESSION_KEY = "fieldshift_last_advice";
 
 export type StoredAdvice = {
@@ -10,6 +12,8 @@ export type StoredAdvice = {
     location?: { lat: number; lon: number; union: string; upazila: string };
   };
   farmer: unknown;
+  /** Language the advice sentences were written in. */
+  lang?: AdviceLang;
 };
 
 export function saveAdvice(data: StoredAdvice) {

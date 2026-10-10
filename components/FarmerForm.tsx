@@ -2,14 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale } from "@/components/LocaleProvider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import en from "@/i18n/en.json";
+import type { AdviceLang } from "@/lib/advice-copy";
 import { saveAdvice } from "@/lib/session-store";
+import { dictLabel } from "@/lib/text";
 
 type UnionRow = {
   upazila: string;
   union: string;
+  union_bn?: string;
   lat: number;
   lon: number;
 };
@@ -29,8 +32,12 @@ const CROPS = [
 
 const SELL = ["rice", "mustard", "lentil", "wheat", "maize", "pulse", "potato"];
 
+const fieldClass =
+  "mt-1 min-h-11 w-full rounded-lg border border-stone-300 bg-white p-2.5 text-base text-[#333]";
+
 export function FarmerForm() {
   const router = useRouter();
+  const { t, lang } = useLocale();
   const [unions, setUnions] = useState<UnionRow[]>([]);
   const [upazila, setUpazila] = useState("Tanore");
   const [union, setUnion] = useState("Kalma");
@@ -48,8 +55,8 @@ export function FarmerForm() {
     fetch("/api/unions")
       .then((r) => r.json())
       .then((j) => setUnions(j.unions ?? []))
-      .catch(() => setError("Could not load unions"));
-  }, []);
+      .catch(() => setError(t.form.loadError));
+  }, [t.form.loadError]);
 
   const unionOptions = useMemo(
     () => unions.filter((u) => u.upazila === upazila),
@@ -66,7 +73,7 @@ export function FarmerForm() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const body = {
+    const farmer = {
       upazila,
       union,
       last_crops: { rabi: lastRabi, kharif1: lastK1, kharif2: lastK2 },
@@ -79,14 +86,21 @@ export function FarmerForm() {
       const res = await fetch("/api/advice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ ...farmer, lang }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message ?? "Request failed");
-      saveAdvice({ advice: data.advice, meta: data.meta, context: data.context, farmer: body });
+      if (!res.ok) throw new Error(data.error?.message ?? t.form.requestFailed);
+      const adviceLang: AdviceLang = data.meta?.advice_lang === "bn" ? "bn" : "en";
+      saveAdvice({
+        advice: data.advice,
+        meta: data.meta,
+        context: data.context,
+        farmer,
+        lang: adviceLang,
+      });
       router.push("/results");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed");
+      setError(err instanceof Error ? err.message : t.form.failed);
     } finally {
       setLoading(false);
     }
@@ -98,103 +112,111 @@ export function FarmerForm() {
     );
   }
 
+  function unionLabel(row: UnionRow) {
+    if (lang === "bn") return dictLabel(t.places.union, row.union);
+    return row.union;
+  }
+
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <Card className="space-y-3">
+      <Card className="space-y-4">
         <label className="block text-sm font-medium text-[#333]">
-          {en.form.upazila}
+          {t.form.upazila}
           <select
-            className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
+            className={fieldClass}
             value={upazila}
             onChange={(e) => setUpazila(e.target.value)}
           >
-            <option value="Godagari">Godagari</option>
-            <option value="Tanore">Tanore</option>
+            <option value="Godagari">{dictLabel(t.places.upazila, "Godagari")}</option>
+            <option value="Tanore">{dictLabel(t.places.upazila, "Tanore")}</option>
           </select>
         </label>
         <label className="block text-sm font-medium text-[#333]">
-          {en.form.union}
+          {t.form.union}
           <select
-            className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
+            className={fieldClass}
             value={union}
             onChange={(e) => setUnion(e.target.value)}
           >
             {unionOptions.map((u) => (
               <option key={u.union} value={u.union}>
-                {u.union}
+                {unionLabel(u)}
               </option>
             ))}
           </select>
         </label>
       </Card>
 
-      <Card className="space-y-3">
-        <CropSelect label={en.form.lastRabi} value={lastRabi} onChange={setLastRabi} />
-        <CropSelect label={en.form.lastK1} value={lastK1} onChange={setLastK1} />
-        <CropSelect label={en.form.lastK2} value={lastK2} onChange={setLastK2} />
+      <Card className="space-y-4">
+        <CropSelect label={t.form.lastRabi} value={lastRabi} onChange={setLastRabi} crops={t.crops} />
+        <CropSelect label={t.form.lastK1} value={lastK1} onChange={setLastK1} crops={t.crops} />
+        <CropSelect label={t.form.lastK2} value={lastK2} onChange={setLastK2} crops={t.crops} />
         <label className="block text-sm font-medium text-[#333]">
-          {en.form.budget}
+          {t.form.budget}
           <select
-            className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
+            className={fieldClass}
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
           >
             {(["low", "medium", "high"] as const).map((b) => (
               <option key={b} value={b}>
-                {en.budget[b]}
+                {t.budget[b]}
               </option>
             ))}
           </select>
         </label>
         <label className="block text-sm font-medium text-[#333]">
-          {en.form.water}
+          {t.form.water}
           <select
-            className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
+            className={fieldClass}
             value={water}
             onChange={(e) => setWater(e.target.value)}
           >
             {(["none", "limited", "reliable", "plenty"] as const).map((w) => (
               <option key={w} value={w}>
-                {en.water[w]}
+                {t.water[w]}
               </option>
             ))}
           </select>
         </label>
         <fieldset>
-          <legend className="text-sm font-medium text-[#333]">{en.form.canSell}</legend>
+          <legend className="text-sm font-medium text-[#333]">{t.form.canSell}</legend>
           <div className="mt-2 flex flex-wrap gap-2">
             {SELL.map((s) => (
-              <label key={s} className="flex items-center gap-1 text-sm text-[#333]">
+              <label
+                key={s}
+                className="flex min-h-11 items-center gap-2 rounded-lg border border-stone-200 px-3 text-sm text-[#333]"
+              >
                 <input
                   type="checkbox"
                   checked={canSell.includes(s)}
                   onChange={() => toggleSell(s)}
                 />
-                {s}
+                {dictLabel(t.sell, s)}
               </label>
             ))}
           </div>
         </fieldset>
         <PrioritySlider
-          label={en.form.priorityWater}
+          label={t.form.priorityWater}
           value={priorities.water}
           onChange={(v) => setPriorities((p) => ({ ...p, water: v }))}
         />
         <PrioritySlider
-          label={en.form.prioritySoil}
+          label={t.form.prioritySoil}
           value={priorities.soil}
           onChange={(v) => setPriorities((p) => ({ ...p, soil: v }))}
         />
         <PrioritySlider
-          label={en.form.priorityProfit}
+          label={t.form.priorityProfit}
           value={priorities.profit}
           onChange={(v) => setPriorities((p) => ({ ...p, profit: v }))}
         />
       </Card>
 
       {error && <p className="text-sm text-red-700">{error}</p>}
-      <Button type="submit" disabled={loading}>
-        {loading ? en.results.loading : en.form.submit}
+      <Button type="submit" disabled={loading} className="min-h-12 text-base">
+        {loading ? t.results.loading : t.form.submit}
       </Button>
     </form>
   );
@@ -204,22 +226,20 @@ function CropSelect({
   label,
   value,
   onChange,
+  crops,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
+  crops: Record<string, string>;
 }) {
   return (
     <label className="block text-sm font-medium text-[#333]">
       {label}
-      <select
-        className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
+      <select className={fieldClass} value={value} onChange={(e) => onChange(e.target.value)}>
         {CROPS.map((c) => (
           <option key={c} value={c}>
-            {c.replace(/_/g, " ")}
+            {dictLabel(crops, c)}
           </option>
         ))}
       </select>
@@ -245,7 +265,7 @@ function PrioritySlider({
         max={5}
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value, 10))}
-        className="mt-1 w-full"
+        className="mt-2 h-8 w-full"
       />
     </label>
   );

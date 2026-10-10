@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { adviceCopy, type AdviceLang } from "./advice-copy";
 import type { ScoredCandidate } from "./types";
 
 const seasonCrop = z.object({
@@ -88,8 +89,10 @@ export function validateAdvice(
 export function mergeAdvice(
   llm: RotationAdvice,
   candidates: ScoredCandidate[],
-  top3Ids: string[]
+  top3Ids: string[],
+  lang: AdviceLang = "en"
 ): RotationAdvice {
+  const copy = adviceCopy(lang);
   const byId = new Map(candidates.map((c) => [c.rotation_id, c]));
   const rotations = llm.rotations.map((rot) => {
     const cand = byId.get(rot.rotation_id);
@@ -123,15 +126,15 @@ export function mergeAdvice(
         water_use: {
           irrigation_mm: c.irrigation_mm,
           change_vs_current_pct: c.change_vs_current_pct,
-          note: "From rule-based scorer.",
+          note: copy.fillerNote,
         },
         soil_health_effect: {
           direction: "neutral",
-          explanation: "See scores.",
+          explanation: copy.fillerExplanation,
         },
-        reasons: ["Ranked by the rule-based scorer."],
+        reasons: [copy.fillerReason],
         risks: [],
-        confidence: { level: "medium", uncertainty_note: "Filled from scorer." },
+        confidence: { level: "medium", uncertainty_note: copy.fillerUncertainty },
       });
       ids.add(c.rotation_id);
     }
@@ -142,15 +145,16 @@ export function mergeAdvice(
 export function scorerFallbackAdvice(
   location: { upazila: string; union: string },
   candidates: ScoredCandidate[],
-  soil: { ph_median: number | null; om_pct: number | null }
+  soil: { ph_median: number | null; om_pct: number | null },
+  lang: AdviceLang = "en"
 ): RotationAdvice {
+  const copy = adviceCopy(lang);
   const top3 = [...candidates]
     .sort((a, b) => b.scores.overall - a.scores.overall)
     .slice(0, 3);
   return {
     location,
-    summary:
-      "These three rotations scored highest for your field and priorities. AI explanations were unavailable; reasons below are from the rule-based scorer.",
+    summary: copy.summary,
     rotations: top3.map((c, i) => ({
       rank: i + 1,
       rotation_id: c.rotation_id,
@@ -160,26 +164,24 @@ export function scorerFallbackAdvice(
       water_use: {
         irrigation_mm: c.irrigation_mm,
         change_vs_current_pct: c.change_vs_current_pct,
-        note: `Estimated irrigation ${c.irrigation_mm} mm for the full rotation.`,
+        note: copy.irrigationNote(c.irrigation_mm),
       },
       soil_health_effect: {
         direction: c.scores.soil_health >= 55 ? "improves" : "neutral",
-        explanation: `Soil health score ${c.scores.soil_health}; organic matter about ${soil.om_pct ?? "unknown"}%.`,
+        explanation: copy.soilExplanation(c.scores.soil_health, soil.om_pct),
       },
       reasons: [
-        `Overall score ${c.scores.overall} from your priority weights.`,
-        `Water score ${c.scores.water}; irrigation change ${c.change_vs_current_pct}% vs your current pattern.`,
-        soil.ph_median != null
-          ? `Union soil pH about ${soil.ph_median}.`
-          : "Soil data from SRDI union samples.",
+        copy.overallReason(c.scores.overall),
+        copy.waterReason(c.scores.water, c.change_vs_current_pct),
+        soil.ph_median != null ? copy.phReason(soil.ph_median) : copy.soilSamplesReason,
       ],
       risks: [],
       confidence: {
         level: "medium",
-        uncertainty_note: "AI explanation unavailable; ranking from deterministic scorer only.",
+        uncertainty_note: copy.uncertainty,
       },
     })),
     not_recommended: [],
-    data_caveats: ["Explanation generated offline from the rule-based scorer."],
+    data_caveats: [copy.caveat],
   };
 }
