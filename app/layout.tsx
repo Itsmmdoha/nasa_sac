@@ -1,11 +1,20 @@
-import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Fraunces, Hind_Siliguri } from "next/font/google";
+import { LangProvider } from "@/lib/i18n";
 import "./globals.css";
 
-const beVietnam = Be_Vietnam_Pro({
+const display = Fraunces({
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const body = Hind_Siliguri({
+  subsets: ["latin", "bengali"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-be-vietnam",
+  variable: "--font-body",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -14,16 +23,13 @@ export const metadata: Metadata = {
     "NASA Space Apps 2026: crop rotation decision support for Godagari and Tanore, Rajshahi",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = { themeColor: "#f6e2b8" };
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      {/* suppressHydrationWarning: browser extensions often inject attrs on body (e.g. cz-shortcut-listen). */}
-      <body suppressHydrationWarning className={`${beVietnam.variable} antialiased`}>
-        {children}
+    <html lang="en" suppressHydrationWarning className={`${display.variable} ${body.variable}`}>
+      <body suppressHydrationWarning>
+        <LangProvider>{children}</LangProvider>
       </body>
     </html>
   );

@@ -1,32 +1,51 @@
+"use client";
+
+import Link from "next/link";
 import { Page } from "@/components/Page";
-import en from "@/i18n/en.json";
+import { useLang } from "@/lib/i18n";
 
 export default function AboutPage() {
+  const { t } = useLang();
+  const a = t.about;
+  const steps = [
+    [a.s1t, a.s1],
+    [a.s2t, a.s2],
+    [a.s3t, a.s3],
+    [a.s4t, a.s4],
+    [a.s5t, a.s5],
+  ];
   return (
     <Page>
-      <h2>{en.about.title}</h2>
-      <p>
-        Orbit2Field scores every rotation from NASA POWER climate, cached SMAP soil moisture and
-        MODIS greenness, and SRDI soil. A System One model then picks one rotation from that list
-        and says how confident it is. If it is not sure, the result is flagged.
-      </p>
-      <p>
-        The same model reads English and Bangla market headlines for an early glut. The zone plan
-        for the upazila keeps one crop from taking every field: mustard goes to the fields where it
-        fits best, and other suitable fields move to lentil or maize. A farm that gives up the top
-        crop is first for it next season.
-      </p>
-      <p>
-        A language model only explains the assignment. It does not choose the crop, and it does not
-        invent the scores.
-      </p>
-      <h2>Data sources</h2>
-      <ul className="plain-list">
-        <li>NASA POWER: rainfall, temperature, soil wetness</li>
-        <li>NASA AppEEARS: SMAP L4 moisture, MODIS NDVI (prefetched)</li>
-        <li>SRDI via BARC Crop Zoning: soil samples and fertilizer doses</li>
-        <li>Market headlines in data/market/headlines.json: English and Bangla</li>
-      </ul>
+      <div className="card page-head">
+        <h1 style={{ fontSize: "clamp(1.8rem,3vw,2.4rem)" }}>{a.title}</h1>
+        <p className="lead">{a.lead}</p>
+      </div>
+      <div className="grid-home" style={{ marginTop: 0 }}>
+        <section className="card">
+          <ol className="about-steps">
+            {steps.map(([title, body]) => (
+              <li key={title}>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <aside className="aside-sticky">
+          <section className="card stack">
+            <h3>{a.sourcesTitle}</h3>
+            <ul className="small" style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6 }}>
+              {a.sources.map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ul>
+          </section>
+          <p className="note">{a.caveat}</p>
+          <Link href="/" className="btn btn-primary">{t.nav.home}</Link>
+        </aside>
+      </div>
     </Page>
   );
 }

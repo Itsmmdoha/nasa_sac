@@ -4,6 +4,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Legend,
   Line,
   LineChart,
   ReferenceLine,
@@ -13,30 +14,48 @@ import {
   YAxis,
 } from "recharts";
 
-export function RainChart({ data }: { data: { month: string; mm: number }[] }) {
+const AXIS = { fontSize: 12, fill: "#86684f" };
+const GRID = "#ead8bb";
+const TIP = {
+  contentStyle: { background: "#fffbf3", border: "1px solid #dcc3a0", borderRadius: 10, fontSize: 13 },
+};
+const RABI = new Set(["NOV", "DEC", "JAN", "FEB", "MAR"]);
+
+export function RainChart({ data, label }: { data: { month: string; mm: number }[]; label: string }) {
+  const rows = data.map((d) => ({ ...d, mm: Math.round(d.mm) }));
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <BarChart data={data}>
-        <CartesianGrid stroke="rgba(255,255,255,.12)" strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#d5e0d6" }} />
-        <YAxis tick={{ fontSize: 10, fill: "#d5e0d6" }} />
-        <Tooltip />
-        <Bar dataKey="mm" fill="#d8f34a" name="Normal rain (mm)" />
+    <ResponsiveContainer width="100%" height={240}>
+      <BarChart data={rows} margin={{ top: 8, right: 8, bottom: 0, left: -12 }}>
+        <CartesianGrid stroke={GRID} vertical={false} />
+        <XAxis dataKey="month" tick={AXIS} axisLine={false} tickLine={false} />
+        <YAxis tick={AXIS} axisLine={false} tickLine={false} />
+        <Tooltip {...TIP} cursor={{ fill: "rgba(227,184,136,.25)" }} />
+        <Bar
+          dataKey="mm"
+          name={label}
+          radius={[6, 6, 0, 0]}
+          shape={(props: unknown) => {
+            const p = props as { x: number; y: number; width: number; height: number; payload: { month: string } };
+            return (
+              <rect x={p.x} y={p.y} width={p.width} height={p.height} rx={5} fill={RABI.has(p.payload.month) ? "#c9844a" : "#0f4c5c"} />
+            );
+          }}
+        />
       </BarChart>
     </ResponsiveContainer>
   );
 }
 
-export function TmaxChart({ data }: { data: { month: string; c: number }[] }) {
+export function TmaxChart({ data, label }: { data: { month: string; c: number }[]; label: string }) {
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <LineChart data={data}>
-        <CartesianGrid stroke="rgba(255,255,255,.12)" strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#d5e0d6" }} />
-        <YAxis tick={{ fontSize: 10, fill: "#d5e0d6" }} />
-        <Tooltip />
-        <ReferenceLine y={35} stroke="#d8f34a" strokeDasharray="4 4" />
-        <Line type="monotone" dataKey="c" stroke="#f4f7f2" name="Tmax normal °C" dot={false} />
+    <ResponsiveContainer width="100%" height={240}>
+      <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -12 }}>
+        <CartesianGrid stroke={GRID} vertical={false} />
+        <XAxis dataKey="month" tick={AXIS} axisLine={false} tickLine={false} />
+        <YAxis tick={AXIS} axisLine={false} tickLine={false} domain={[20, 40]} />
+        <Tooltip {...TIP} />
+        <ReferenceLine y={35} stroke="#b4332a" strokeDasharray="5 4" label={{ value: "35 °C", fill: "#b4332a", fontSize: 12, position: "insideTopRight" }} />
+        <Line type="monotone" dataKey="c" stroke="#e6b325" strokeWidth={3} name={label} dot={{ r: 3, fill: "#e6b325" }} />
       </LineChart>
     </ResponsiveContainer>
   );
@@ -44,18 +63,23 @@ export function TmaxChart({ data }: { data: { month: string; c: number }[] }) {
 
 export function SmapChart({
   data,
+  rootLabel,
+  surfLabel,
 }: {
   data: { month: string; rootzone: number; surface: number }[];
+  rootLabel: string;
+  surfLabel: string;
 }) {
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <LineChart data={data}>
-        <CartesianGrid stroke="rgba(255,255,255,.12)" strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#d5e0d6" }} />
-        <YAxis tick={{ fontSize: 10, fill: "#d5e0d6" }} domain={[0, 0.5]} />
-        <Tooltip />
-        <Line type="monotone" dataKey="rootzone" stroke="#d8f34a" name="Root zone m³/m³" />
-        <Line type="monotone" dataKey="surface" stroke="#f4f7f2" name="Surface m³/m³" />
+    <ResponsiveContainer width="100%" height={240}>
+      <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -12 }}>
+        <CartesianGrid stroke={GRID} vertical={false} />
+        <XAxis dataKey="month" tick={AXIS} axisLine={false} tickLine={false} />
+        <YAxis tick={AXIS} axisLine={false} tickLine={false} domain={[0, 0.5]} />
+        <Tooltip {...TIP} />
+        <Legend wrapperStyle={{ fontSize: 13 }} />
+        <Line type="monotone" dataKey="rootzone" stroke="#0f4c5c" strokeWidth={3} name={rootLabel} dot={false} />
+        <Line type="monotone" dataKey="surface" stroke="#c9844a" strokeWidth={2} strokeDasharray="5 4" name={surfLabel} dot={false} />
       </LineChart>
     </ResponsiveContainer>
   );
