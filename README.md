@@ -16,11 +16,13 @@ cp .env.example .env.local
 
 `OPENCODE_API_KEY` is the Jev key. `GROQ_API_KEY` is optional; without it the explanation is a short scorer template. `DATABASE_URL` in the example matches the Compose database.
 
-2. Start Postgres:
+2. Start Postgres (optional):
 
 ```bash
 docker compose up -d
 ```
+
+Without a reachable `DATABASE_URL`, the zone plan is kept in a local file store (`data/cache/zone-store.json`) with the same rules, so advice still works. Without `OPENCODE_API_KEY` the top scorer pick is used and the market check scans the headlines for glut words; without `GROQ_API_KEY` the explanation is a rule-based template in English and Bangla.
 
 3. Install once, then start the app:
 
@@ -30,6 +32,14 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). Enter a farm name, pick a union, and get advice. The same farm name in an upazila updates that farm's row.
+
+To fill a zone with neighbour farms for a demo:
+
+```bash
+node scripts/seed_zone.mjs http://localhost:3000 Godagari
+```
+
+The header art lives in `public/field/` (scene sprites) and `public/crops/` (crop icons); prompts are in `img_prompts/`.
 
 ## Tests
 
