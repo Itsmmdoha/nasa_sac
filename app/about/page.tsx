@@ -1,39 +1,32 @@
-import Image from "next/image";
-import { Nav } from "@/components/Nav";
-import { Card } from "@/components/ui/card";
+import { Page } from "@/components/Page";
 import en from "@/i18n/en.json";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[#f5f5f4]">
-      <Nav />
-      <div className="mx-auto max-w-lg space-y-4 px-4 py-6">
-        <h2 className="text-lg font-semibold">{en.about.title}</h2>
-        <Card className="space-y-2 text-sm text-[#333]">
-          <p>
-            Field Shift combines NASA POWER climate, SMAP soil moisture, MODIS greenness, and SRDI
-            soil surveys to score crop rotations in code, then uses a Groq-hosted model to rank and
-            explain the top options.
-          </p>
-          <p>Numbers always come from the scorer; the model does not invent scores.</p>
-        </Card>
-        <Image
-          src="/pipeline.svg"
-          alt="Pipeline diagram"
-          width={600}
-          height={400}
-          className="w-full rounded-lg border border-stone-200 bg-white"
-        />
-        <Card className="text-sm">
-          <p className="font-medium">Data sources</p>
-          <ul className="mt-2 list-disc pl-5 text-[#333]">
-            <li>NASA POWER — rainfall, temperature, soil wetness</li>
-            <li>NASA AppEEARS — SMAP L4 moisture, MODIS NDVI</li>
-            <li>SRDI via BARC Crop Zoning — soil samples, land units, FRS doses</li>
-            <li>BARC suitability — crop zoning from SRDI land data</li>
-          </ul>
-        </Card>
-      </div>
-    </main>
+    <Page>
+      <h2>{en.about.title}</h2>
+      <p>
+        Orbit2Field scores every rotation from NASA POWER climate, cached SMAP soil moisture and
+        MODIS greenness, and SRDI soil. A System One model then picks one rotation from that list
+        and says how confident it is. If it is not sure, the result is flagged.
+      </p>
+      <p>
+        The same model reads English and Bangla market headlines for an early glut. The zone plan
+        for the upazila keeps one crop from taking every field: mustard goes to the fields where it
+        fits best, and other suitable fields move to lentil or maize. A farm that gives up the top
+        crop is first for it next season.
+      </p>
+      <p>
+        A language model only explains the assignment. It does not choose the crop, and it does not
+        invent the scores.
+      </p>
+      <h2>Data sources</h2>
+      <ul className="plain-list">
+        <li>NASA POWER: rainfall, temperature, soil wetness</li>
+        <li>NASA AppEEARS: SMAP L4 moisture, MODIS NDVI (prefetched)</li>
+        <li>SRDI via BARC Crop Zoning: soil samples and fertilizer doses</li>
+        <li>Market headlines in data/market/headlines.json: English and Bangla</li>
+      </ul>
+    </Page>
   );
 }

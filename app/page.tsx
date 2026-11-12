@@ -1,13 +1,15 @@
+"use client";
+
+import { useState } from "react";
 import { FarmerForm } from "@/components/FarmerForm";
-import { Nav } from "@/components/Nav";
+import { Page } from "@/components/Page";
 
 export default function HomePage() {
+  const [place, setPlace] = useState("Kalma");
+
   return (
-    <main className="min-h-screen bg-[#f5f5f4]">
-      <Nav />
-      <div className="mx-auto max-w-lg space-y-4 px-4 py-6">
-        <FarmerForm />
-      </div>
-    </main>
+    <Page place={place}>
+      <FarmerForm onPlaceChange={setPlace} />
+    </Page>
   );
 }

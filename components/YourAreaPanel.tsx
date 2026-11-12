@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import en from "@/i18n/en.json";
 import { currentBarindSeason, seasonClimateSnapshot } from "@/lib/upcomingSeason";
 import type { ClimateSummary, SatelliteSummary, UnionSoilProfile } from "@/lib/types";
@@ -9,7 +8,6 @@ function na(v: number | string | null | undefined) {
 }
 
 export function YourAreaPanel({
-  location,
   soil,
   climate,
   satellite,
@@ -26,14 +24,11 @@ export function YourAreaPanel({
     : null;
 
   return (
-    <Card className="space-y-3 text-sm text-[#333]">
-      <h3 className="font-semibold text-[#14532d]">
-        {en.results.yourArea}: {location.union}, {location.upazila}
-      </h3>
-
+    <div className="stack">
+      <h2>{en.results.yourArea}</h2>
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-[#333]">SRDI soil</p>
-        <ul className="mt-1 space-y-0.5">
+        <h3>Soil</h3>
+        <ul className="plain-list">
           <li>pH: {na(soil.ph_median)}</li>
           <li>Organic matter: {soil.om_pct != null ? `${soil.om_pct}%` : en.data.notAvailable}</li>
           <li>P: {na(soil.p_ppm_median)} ppm</li>
@@ -42,46 +37,31 @@ export function YourAreaPanel({
           <li>Land type: {na(soil.land_type)}</li>
           <li>Drainage: {na(soil.drainage)}</li>
         </ul>
-        <a
-          href={soil.source_url}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-1 inline-block text-xs text-[#14532d] underline"
-        >
+        <a href={soil.source_url} target="_blank" rel="noreferrer">
           {soil.source}
         </a>
       </div>
-
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-[#333]">NASA POWER</p>
-        <p className="mt-1">{snap.seasonLabel}</p>
-        <p>
-          Rain (normal): {na(snap.rainNormalMm)} mm
-          {snap.rainAnomalyPct != null && (
-            <span>
-              {" "}
-              · recent vs average: {snap.rainAnomalyPct > 0 ? "+" : ""}
-              {snap.rainAnomalyPct}%
-            </span>
-          )}
-        </p>
+        <h3>NASA POWER</h3>
+        <p>{snap.seasonLabel}</p>
+        <p>Rain (normal): {na(snap.rainNormalMm)} mm</p>
+        {snap.rainAnomalyPct != null && (
+          <p>
+            Recent rain is {snap.rainAnomalyPct > 0 ? `${snap.rainAnomalyPct}% above` : `${Math.abs(snap.rainAnomalyPct)}% below`} the average.
+          </p>
+        )}
         <p>Mean Tmax (normal): {na(snap.tmaxNormalC)} °C</p>
       </div>
-
       {(satellite.rabi_rootzone_mean > 0 || latestNdvi != null) && (
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-[#333]">
-            SMAP / NDVI (cached)
-          </p>
-          {satellite.fallback && (
-            <p className="text-xs text-[#333]">Nearest cached NASA point for this union.</p>
-          )}
+          <h3>SMAP and NDVI, cached</h3>
+          {satellite.fallback && <p>Nearest cached NASA point for this union.</p>}
           {satellite.rabi_rootzone_mean > 0 && (
             <p>Rabi root-zone moisture: {satellite.rabi_rootzone_mean.toFixed(3)} m³/m³</p>
           )}
           {latestNdvi != null && <p>Latest NDVI: {latestNdvi.toFixed(2)}</p>}
         </div>
       )}
-    </Card>
+    </div>
   );
 }

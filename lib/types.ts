@@ -3,6 +3,7 @@ import { z } from "zod";
 export type SeasonKey = "rabi" | "kharif1" | "kharif2";
 
 export const farmerInputSchema = z.object({
+  farm_name: z.string().trim().min(1).max(80),
   upazila: z.string(),
   union: z.string(),
   last_crops: z.object({

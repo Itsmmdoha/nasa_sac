@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-/** End-to-end demo: Kalma, Tanore, Boro farmer with limited water (BUILD_GUIDE §6.8). */
+/** End-to-end demo: Kalma, Tanore, Boro farmer with limited water. */
 const payload = {
+  farm_name: "Demo farm",
   upazila: "Tanore",
   union: "Kalma",
   last_crops: { rabi: "boro", kharif1: "fallow", kharif2: "t_aman" },
@@ -24,29 +25,22 @@ async function main() {
     process.exit(1);
   }
   const j = JSON.parse(text);
-  const rots = j.advice?.rotations ?? [];
-  if (rots.length !== 3) {
-    console.error("expected 3 rotations, got", rots.length);
-    process.exit(1);
-  }
-  const ranks = rots.map((r) => r.rank).sort().join(",");
-  if (ranks !== "1,2,3") {
-    console.error("bad ranks", ranks);
-    process.exit(1);
-  }
-  const top = rots.find((r) => r.rank === 1);
-  const boro = rots.find((r) => r.rotation_id === "R1");
-  if (top && boro && top.scores.water < boro.scores.water) {
-    console.error("expected water-first ranking above Boro baseline");
+  const rot = j.advice?.rotation;
+  if (!rot?.rotation_id) {
+    console.error("expected one assigned rotation");
     process.exit(1);
   }
   console.log(
     JSON.stringify(
       {
         ok: true,
-        source: j.meta?.source,
-        top: top?.rotation_id,
-        water_scores: rots.map((r) => ({ id: r.rotation_id, water: r.scores.water })),
+        decision_source: j.advice.decision_source,
+        explanation_source: j.meta?.source,
+        rotation: rot.rotation_id,
+        unsure: j.advice.unsure,
+        deferred: j.advice.deferred,
+        zone: j.advice.zone,
+        market_note: j.advice.market_note,
       },
       null,
       2

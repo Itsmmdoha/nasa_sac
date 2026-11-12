@@ -17,11 +17,11 @@ export function RainChart({ data }: { data: { month: string; mm: number }[] }) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <BarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-        <YAxis tick={{ fontSize: 10 }} />
+        <CartesianGrid stroke="rgba(255,255,255,.12)" strokeDasharray="3 3" />
+        <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#d5e0d6" }} />
+        <YAxis tick={{ fontSize: 10, fill: "#d5e0d6" }} />
         <Tooltip />
-        <Bar dataKey="mm" fill="#047857" name="Normal rain (mm)" />
+        <Bar dataKey="mm" fill="#d8f34a" name="Normal rain (mm)" />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -31,12 +31,12 @@ export function TmaxChart({ data }: { data: { month: string; c: number }[] }) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-        <YAxis tick={{ fontSize: 10 }} />
+        <CartesianGrid stroke="rgba(255,255,255,.12)" strokeDasharray="3 3" />
+        <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#d5e0d6" }} />
+        <YAxis tick={{ fontSize: 10, fill: "#d5e0d6" }} />
         <Tooltip />
-        <ReferenceLine y={35} stroke="#dc2626" strokeDasharray="4 4" label="35°C" />
-        <Line type="monotone" dataKey="c" stroke="#b45309" name="Tmax normal °C" dot={false} />
+        <ReferenceLine y={35} stroke="#d8f34a" strokeDasharray="4 4" />
+        <Line type="monotone" dataKey="c" stroke="#f4f7f2" name="Tmax normal °C" dot={false} />
       </LineChart>
     </ResponsiveContainer>
   );
@@ -50,12 +50,12 @@ export function SmapChart({
   return (
     <ResponsiveContainer width="100%" height={220}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-        <YAxis tick={{ fontSize: 10 }} domain={[0, 0.5]} />
+        <CartesianGrid stroke="rgba(255,255,255,.12)" strokeDasharray="3 3" />
+        <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#d5e0d6" }} />
+        <YAxis tick={{ fontSize: 10, fill: "#d5e0d6" }} domain={[0, 0.5]} />
         <Tooltip />
-        <Line type="monotone" dataKey="rootzone" stroke="#0369a1" name="Root zone m³/m³" />
-        <Line type="monotone" dataKey="surface" stroke="#7c3aed" name="Surface m³/m³" />
+        <Line type="monotone" dataKey="rootzone" stroke="#d8f34a" name="Root zone m³/m³" />
+        <Line type="monotone" dataKey="surface" stroke="#f4f7f2" name="Surface m³/m³" />
       </LineChart>
     </ResponsiveContainer>
   );

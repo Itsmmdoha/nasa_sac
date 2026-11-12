@@ -2,6 +2,7 @@
 /.next/
 /out/
 /data/cache/
+.env
 .env.local
 .env*.local
 secrets/

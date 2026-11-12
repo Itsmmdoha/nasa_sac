@@ -10,6 +10,7 @@
   "form": {
     "upazila": "Upazila",
     "union": "Union",
+    "farmName": "Farm name",
     "lastRabi": "Last Rabi season crop (Nov–Mar)",
     "lastK1": "Last Kharif-1 crop (Mar–Jun)",
     "lastK2": "Last Kharif-2 crop (Jul–Oct)",
@@ -34,13 +35,18 @@
     "kharif2": "Kharif-2 (Jul–Oct)"
   },
   "results": {
-    "title": "Your top rotations",
+    "title": "Your rotation",
     "current": "Your current pattern",
-    "notRecommended": "Not recommended",
     "yourArea": "Your area",
-    "aiExplanation": "AI explanation",
-    "ruleBased": "Rule-based ranking (AI unavailable)",
-    "mockData": "Mock data",
+    "decisionJev": "System One decision",
+    "decisionScorer": "Scorer decision (System One unavailable)",
+    "unsure": "Not sure — review this pick",
+    "priority": "You gave up the top crop last season, so you are first this season.",
+    "zoneTitle": "This zone this season",
+    "marketTitle": "Market check",
+    "aiExplanation": "Explanation",
+    "ruleBased": "Rule-based explanation (language model unavailable)",
+    "mockData": "Mock explanation",
     "loading": "Scoring rotations and preparing advice…"
   },
   "data": {
@@ -51,6 +57,6 @@
     "notAvailable": "not available"
   },
   "about": {
-    "title": "How Field Shift works"
+    "title": "How Orbit2Field decides"
   }
 }

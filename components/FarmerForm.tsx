@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import en from "@/i18n/en.json";
 import { saveAdvice } from "@/lib/session-store";
 
@@ -29,9 +28,10 @@ const CROPS = [
 
 const SELL = ["rice", "mustard", "lentil", "wheat", "maize", "pulse", "potato"];
 
-export function FarmerForm() {
+export function FarmerForm({ onPlaceChange }: { onPlaceChange?: (place: string) => void }) {
   const router = useRouter();
   const [unions, setUnions] = useState<UnionRow[]>([]);
+  const [farmName, setFarmName] = useState("");
   const [upazila, setUpazila] = useState("Tanore");
   const [union, setUnion] = useState("Kalma");
   const [lastRabi, setLastRabi] = useState("boro");
@@ -62,11 +62,16 @@ export function FarmerForm() {
     }
   }, [unionOptions, union]);
 
+  useEffect(() => {
+    onPlaceChange?.(union);
+  }, [union, onPlaceChange]);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
     const body = {
+      farm_name: farmName.trim(),
       upazila,
       union,
       last_crops: { rabi: lastRabi, kharif1: lastK1, kharif2: lastK2 },
@@ -82,7 +87,14 @@ export function FarmerForm() {
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message ?? "Request failed");
+      if (!res.ok) {
+        const err = data.error;
+        const message =
+          typeof err === "string"
+            ? err
+            : "Request failed";
+        throw new Error(message);
+      }
       saveAdvice({ advice: data.advice, meta: data.meta, context: data.context, farmer: body });
       router.push("/results");
     } catch (err) {
@@ -99,100 +111,89 @@ export function FarmerForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <Card className="space-y-3">
-        <label className="block text-sm font-medium text-[#333]">
-          {en.form.upazila}
-          <select
-            className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
-            value={upazila}
-            onChange={(e) => setUpazila(e.target.value)}
-          >
-            <option value="Godagari">Godagari</option>
-            <option value="Tanore">Tanore</option>
-          </select>
-        </label>
-        <label className="block text-sm font-medium text-[#333]">
-          {en.form.union}
-          <select
-            className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
-            value={union}
-            onChange={(e) => setUnion(e.target.value)}
-          >
-            {unionOptions.map((u) => (
-              <option key={u.union} value={u.union}>
-                {u.union}
-              </option>
-            ))}
-          </select>
-        </label>
-      </Card>
+    <form onSubmit={onSubmit}>
+      <label className="field">
+        {en.form.farmName}
+        <input
+          required
+          maxLength={80}
+          value={farmName}
+          onChange={(e) => setFarmName(e.target.value)}
+        />
+      </label>
+      <label className="field">
+        {en.form.upazila}
+        <select value={upazila} onChange={(e) => setUpazila(e.target.value)}>
+          <option value="Godagari">Godagari</option>
+          <option value="Tanore">Tanore</option>
+        </select>
+      </label>
+      <label className="field">
+        {en.form.union}
+        <select value={union} onChange={(e) => setUnion(e.target.value)}>
+          {unionOptions.map((u) => (
+            <option key={u.union} value={u.union}>
+              {u.union}
+            </option>
+          ))}
+        </select>
+      </label>
 
-      <Card className="space-y-3">
-        <CropSelect label={en.form.lastRabi} value={lastRabi} onChange={setLastRabi} />
-        <CropSelect label={en.form.lastK1} value={lastK1} onChange={setLastK1} />
-        <CropSelect label={en.form.lastK2} value={lastK2} onChange={setLastK2} />
-        <label className="block text-sm font-medium text-[#333]">
-          {en.form.budget}
-          <select
-            className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)}
-          >
-            {(["low", "medium", "high"] as const).map((b) => (
-              <option key={b} value={b}>
-                {en.budget[b]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block text-sm font-medium text-[#333]">
-          {en.form.water}
-          <select
-            className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
-            value={water}
-            onChange={(e) => setWater(e.target.value)}
-          >
-            {(["none", "limited", "reliable", "plenty"] as const).map((w) => (
-              <option key={w} value={w}>
-                {en.water[w]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <fieldset>
-          <legend className="text-sm font-medium text-[#333]">{en.form.canSell}</legend>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {SELL.map((s) => (
-              <label key={s} className="flex items-center gap-1 text-sm text-[#333]">
-                <input
-                  type="checkbox"
-                  checked={canSell.includes(s)}
-                  onChange={() => toggleSell(s)}
-                />
-                {s}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <PrioritySlider
-          label={en.form.priorityWater}
-          value={priorities.water}
-          onChange={(v) => setPriorities((p) => ({ ...p, water: v }))}
-        />
-        <PrioritySlider
-          label={en.form.prioritySoil}
-          value={priorities.soil}
-          onChange={(v) => setPriorities((p) => ({ ...p, soil: v }))}
-        />
-        <PrioritySlider
-          label={en.form.priorityProfit}
-          value={priorities.profit}
-          onChange={(v) => setPriorities((p) => ({ ...p, profit: v }))}
-        />
-      </Card>
+      <CropSelect label={en.form.lastRabi} value={lastRabi} onChange={setLastRabi} />
+      <CropSelect label={en.form.lastK1} value={lastK1} onChange={setLastK1} />
+      <CropSelect label={en.form.lastK2} value={lastK2} onChange={setLastK2} />
+      <label className="field">
+        {en.form.budget}
+        <select value={budget} onChange={(e) => setBudget(e.target.value)}>
+          {(["low", "medium", "high"] as const).map((b) => (
+            <option key={b} value={b}>
+              {en.budget[b]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="field">
+        {en.form.water}
+        <select value={water} onChange={(e) => setWater(e.target.value)}>
+          {(["none", "limited", "reliable", "plenty"] as const).map((w) => (
+            <option key={w} value={w}>
+              {en.water[w]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <fieldset className="field">
+        <legend>{en.form.canSell}</legend>
+        <div className="checks">
+          {SELL.map((s) => (
+            <label key={s}>
+              <input
+                type="checkbox"
+                checked={canSell.includes(s)}
+                onChange={() => toggleSell(s)}
+              />{" "}
+              {s}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <PrioritySlider
+        label={en.form.priorityWater}
+        value={priorities.water}
+        onChange={(v) => setPriorities((p) => ({ ...p, water: v }))}
+      />
+      <PrioritySlider
+        label={en.form.prioritySoil}
+        value={priorities.soil}
+        onChange={(v) => setPriorities((p) => ({ ...p, soil: v }))}
+      />
+      <PrioritySlider
+        label={en.form.priorityProfit}
+        value={priorities.profit}
+        onChange={(v) => setPriorities((p) => ({ ...p, profit: v }))}
+      />
 
-      {error && <p className="text-sm text-red-700">{error}</p>}
+      {error && <p>{error}</p>}
       <Button type="submit" disabled={loading}>
         {loading ? en.results.loading : en.form.submit}
       </Button>
@@ -210,13 +211,9 @@ function CropSelect({
   onChange: (v: string) => void;
 }) {
   return (
-    <label className="block text-sm font-medium text-[#333]">
+    <label className="field">
       {label}
-      <select
-        className="mt-1 w-full rounded border border-stone-300 p-2 text-[#333]"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
         {CROPS.map((c) => (
           <option key={c} value={c}>
             {c.replace(/_/g, " ")}
@@ -237,7 +234,7 @@ function PrioritySlider({
   onChange: (n: number) => void;
 }) {
   return (
-    <label className="block text-sm font-medium text-[#333]">
+    <label className="field">
       {label}: {value}
       <input
         type="range"
@@ -245,7 +242,6 @@ function PrioritySlider({
         max={5}
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value, 10))}
-        className="mt-1 w-full"
       />
     </label>
   );

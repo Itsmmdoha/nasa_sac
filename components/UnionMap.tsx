@@ -6,7 +6,7 @@ const MapInner = dynamic(() => import("./UnionMapInner"), { ssr: false });
 
 export function UnionMap(props: { lat: number; lon: number; label: string }) {
   return (
-    <div className="h-48 w-full overflow-hidden rounded-lg border border-stone-200">
+    <div className="map-frame">
       <MapInner {...props} />
     </div>
   );

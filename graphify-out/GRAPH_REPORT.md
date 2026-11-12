@@ -1,13 +1,18 @@
-# Graph Report - nasa-sac  (2026-10-01)
+# Graph Report - nasa-sac  (2026-11-12)
 
 ## Corpus Check
-- 81 files · ~97,838 words
+- 101 files · ~186,524 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2405 nodes · 7295 edges · 146 communities (81 shown, 65 thin omitted)
+- 2500 nodes · 7457 edges · 148 communities (90 shown, 58 thin omitted)
 - Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 667 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `7af9fb7a`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_Community 0|Community 0]]
@@ -15,7 +20,6 @@
 - [[_COMMUNITY_Community 2|Community 2]]
 - [[_COMMUNITY_Community 3|Community 3]]
 - [[_COMMUNITY_Community 4|Community 4]]
-- [[_COMMUNITY_Community 5|Community 5]]
 - [[_COMMUNITY_Community 6|Community 6]]
 - [[_COMMUNITY_Community 7|Community 7]]
 - [[_COMMUNITY_Community 8|Community 8]]
@@ -39,6 +43,7 @@
 - [[_COMMUNITY_Community 26|Community 26]]
 - [[_COMMUNITY_Community 27|Community 27]]
 - [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
 - [[_COMMUNITY_Community 30|Community 30]]
 - [[_COMMUNITY_Community 31|Community 31]]
 - [[_COMMUNITY_Community 32|Community 32]]
@@ -71,7 +76,7 @@
 - [[_COMMUNITY_Community 59|Community 59]]
 - [[_COMMUNITY_Community 60|Community 60]]
 - [[_COMMUNITY_Community 61|Community 61]]
-- [[_COMMUNITY_Community 63|Community 63]]
+- [[_COMMUNITY_Community 62|Community 62]]
 - [[_COMMUNITY_Community 64|Community 64]]
 - [[_COMMUNITY_Community 65|Community 65]]
 - [[_COMMUNITY_Community 66|Community 66]]
@@ -79,6 +84,7 @@
 - [[_COMMUNITY_Community 68|Community 68]]
 - [[_COMMUNITY_Community 69|Community 69]]
 - [[_COMMUNITY_Community 70|Community 70]]
+- [[_COMMUNITY_Community 71|Community 71]]
 - [[_COMMUNITY_Community 72|Community 72]]
 - [[_COMMUNITY_Community 73|Community 73]]
 - [[_COMMUNITY_Community 74|Community 74]]
@@ -98,8 +104,8 @@
 - [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
-- [[_COMMUNITY_Community 91|Community 91]]
 - [[_COMMUNITY_Community 92|Community 92]]
+- [[_COMMUNITY_Community 93|Community 93]]
 - [[_COMMUNITY_Community 94|Community 94]]
 - [[_COMMUNITY_Community 95|Community 95]]
 - [[_COMMUNITY_Community 96|Community 96]]
@@ -107,25 +113,19 @@
 - [[_COMMUNITY_Community 98|Community 98]]
 - [[_COMMUNITY_Community 99|Community 99]]
 - [[_COMMUNITY_Community 100|Community 100]]
-- [[_COMMUNITY_Community 101|Community 101]]
 - [[_COMMUNITY_Community 102|Community 102]]
-- [[_COMMUNITY_Community 103|Community 103]]
 - [[_COMMUNITY_Community 104|Community 104]]
 - [[_COMMUNITY_Community 105|Community 105]]
 - [[_COMMUNITY_Community 106|Community 106]]
 - [[_COMMUNITY_Community 107|Community 107]]
 - [[_COMMUNITY_Community 108|Community 108]]
-- [[_COMMUNITY_Community 109|Community 109]]
+- [[_COMMUNITY_Community 110|Community 110]]
 - [[_COMMUNITY_Community 111|Community 111]]
 - [[_COMMUNITY_Community 112|Community 112]]
 - [[_COMMUNITY_Community 113|Community 113]]
-- [[_COMMUNITY_Community 114|Community 114]]
 - [[_COMMUNITY_Community 115|Community 115]]
 - [[_COMMUNITY_Community 117|Community 117]]
-- [[_COMMUNITY_Community 118|Community 118]]
-- [[_COMMUNITY_Community 119|Community 119]]
 - [[_COMMUNITY_Community 120|Community 120]]
-- [[_COMMUNITY_Community 121|Community 121]]
 - [[_COMMUNITY_Community 122|Community 122]]
 - [[_COMMUNITY_Community 124|Community 124]]
 - [[_COMMUNITY_Community 125|Community 125]]
@@ -133,10 +133,22 @@
 - [[_COMMUNITY_Community 127|Community 127]]
 - [[_COMMUNITY_Community 128|Community 128]]
 - [[_COMMUNITY_Community 133|Community 133]]
-- [[_COMMUNITY_Community 139|Community 139]]
+- [[_COMMUNITY_Community 140|Community 140]]
+- [[_COMMUNITY_Community 142|Community 142]]
 - [[_COMMUNITY_Community 143|Community 143]]
 - [[_COMMUNITY_Community 144|Community 144]]
-- [[_COMMUNITY_Community 145|Community 145]]
+- [[_COMMUNITY_Community 146|Community 146]]
+- [[_COMMUNITY_Community 148|Community 148]]
+- [[_COMMUNITY_Community 150|Community 150]]
+- [[_COMMUNITY_Community 151|Community 151]]
+- [[_COMMUNITY_Community 153|Community 153]]
+- [[_COMMUNITY_Community 157|Community 157]]
+- [[_COMMUNITY_Community 158|Community 158]]
+- [[_COMMUNITY_Community 160|Community 160]]
+- [[_COMMUNITY_Community 161|Community 161]]
+- [[_COMMUNITY_Community 162|Community 162]]
+- [[_COMMUNITY_Community 163|Community 163]]
+- [[_COMMUNITY_Community 164|Community 164]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `_()` - 435 edges
@@ -151,85 +163,77 @@
 10. `ar()` - 52 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `POST()` --calls--> `getAdvice()`  [EXTRACTED]
-  app/api/advice/route.ts → lib/llm.ts
+- `POST()` --calls--> `farmId()`  [EXTRACTED]
+  app/api/advice/route.ts → lib/db.ts
+- `POST()` --calls--> `persistDecision()`  [EXTRACTED]
+  app/api/advice/route.ts → lib/db.ts
 - `POST()` --calls--> `getClimateSummary()`  [EXTRACTED]
   app/api/advice/route.ts → lib/power.ts
-- `POST()` --calls--> `scoreRotations()`  [EXTRACTED]
-  app/api/advice/route.ts → lib/scoring.ts
-- `POST()` --calls--> `getUnionSoilProfile()`  [EXTRACTED]
-  app/api/advice/route.ts → lib/soil.ts
-- `POST()` --calls--> `getUnion()`  [EXTRACTED]
-  app/api/advice/route.ts → lib/unions.ts
+- `POST()` --calls--> `enrichClimateWithSatellite()`  [EXTRACTED]
+  app/api/advice/route.ts → lib/satellite.ts
+- `POST()` --calls--> `getSatelliteSummary()`  [EXTRACTED]
+  app/api/advice/route.ts → lib/satellite.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (146 total, 65 thin omitted)
+## Communities (148 total, 58 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.11
-Nodes (8): eh, ff(), gd, kh(), qu, Uc, xf(), yh()
+Cohesion: 0.08
+Nodes (10): eh, eo(), ff(), gd, kh(), nc, Nt(), Uc (+2 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.14
-Nodes (6): gl, lp, sd, to(), xc(), xu
+Cohesion: 0.08
+Nodes (11): bp(), ca(), cd(), gl, ld(), lp, sd, td (+3 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.07
-Nodes (27): _(), ae(), Ai(), attach(), bind(), _createDomListener(), Dl(), en() (+19 more)
+Cohesion: 0.05
+Nodes (32): _(), attach(), au(), bind(), cf(), _createDomListener(), el(), en() (+24 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.07
-Nodes (9): decorate(), fl, init(), Nu, off(), on(), once(), ss() (+1 more)
+Cohesion: 0.11
+Nodes (4): al(), decorate(), on(), Pl()
 
 ### Community 4 - "Community 4"
-Cohesion: 0.23
-Nodes (18): a(), b(), c(), D(), dt(), Ei(), error(), f() (+10 more)
-
-### Community 5 - "Community 5"
-Cohesion: 0.09
-Nodes (4): id, lh, ou, xl
+Cohesion: 0.20
+Nodes (20): Ai(), c(), cs(), Di(), Dl(), Fi(), Ii(), ji() (+12 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.10
-Nodes (4): es(), Jo(), ts(), xo()
+Cohesion: 0.13
+Nodes (5): Iu(), lu(), Nu, oc, wu
 
 ### Community 7 - "Community 7"
-Cohesion: 0.09
-Nodes (8): Ba(), Do(), fo(), go(), ho(), io(), nn(), ro()
+Cohesion: 0.07
+Nodes (11): de(), Do(), fo(), go(), Gu(), ho(), It(), Ks() (+3 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.10
-Nodes (18): RainChart(), SmapChart(), TmaxChart(), CROPS, FarmerForm(), SELL, UnionRow, Nav() (+10 more)
+Cohesion: 0.08
+Nodes (30): RainChart(), SmapChart(), TmaxChart(), CROPS, FarmerForm(), SELL, UnionRow, LINKS (+22 more)
 
 ### Community 9 - "Community 9"
-Cohesion: 0.11
-Nodes (3): hd(), md(), wn()
+Cohesion: 0.13
+Nodes (23): createSchema(), ensureSchema(), farmId(), getPool(), HolderRow, loadHolders(), persistDecision(), SavedDecision (+15 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.12
-Nodes (22): BUDGET_MULT, buildSeasonCells(), clamp(), cropById(), findCurrentRotation(), heatFit(), loadCrops(), loadRotations() (+14 more)
+Cohesion: 0.11
+Nodes (24): BUDGET_MULT, buildSeasonCells(), clamp(), cropById(), findCurrentRotation(), heatFit(), loadCrops(), loadRotations() (+16 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.06
-Nodes (34): dependencies, class-variance-authority, clsx, leaflet, lucide-react, next, openai, react (+26 more)
+Cohesion: 0.05
+Nodes (36): dependencies, class-variance-authority, clsx, leaflet, lucide-react, next, openai, pg (+28 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.11
-Nodes (16): af(), Ah(), Ch(), ef, Fd(), Hc(), ih, jc() (+8 more)
+Cohesion: 0.20
+Nodes (8): Ch(), ih, jc(), lf(), mh(), nh, Oh(), wh()
 
 ### Community 13 - "Community 13"
-Cohesion: 0.15
-Nodes (10): Ci(), fe(), le(), lt(), mounted(), pt(), Rt(), w() (+2 more)
+Cohesion: 0.11
+Nodes (15): br(), Ci(), dt(), fr(), g(), In(), lt(), m() (+7 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.12
-Nodes (21): bl(), br(), E(), el(), fr(), gr(), hl(), hr() (+13 more)
-
-### Community 18 - "Community 18"
-Cohesion: 0.13
-Nodes (20): an(), cs(), Di(), Fi(), Ii(), In(), ji(), jn() (+12 more)
+Cohesion: 0.11
+Nodes (3): mn(), mo(), r()
 
 ### Community 20 - "Community 20"
 Cohesion: 0.07
@@ -239,113 +243,117 @@ Nodes (29): 1. Challenge, 2. Data sources, 3. Pipeline, 4.1 NASA POWER: tested l
 Cohesion: 0.07
 Nodes (29): 1. Challenge, 2. Data sources, 3. Pipeline, 4.1 NASA POWER: tested live ✅, 4.2 AppEEARS (SMAP, MODIS, HLS, VIIRS): tested live ✅, 4.3 Earthdata direct: CMR and GES DISC (for IMERG, later), 4.4 Groq LLM: tested live ✅, 4.5 SRDI data endpoints (+21 more)
 
-### Community 22 - "Community 22"
-Cohesion: 0.12
-Nodes (10): ac, _addBasicStylesAutoformats(), _addBlockQuoteAutoformats(), _addHeadingAutoformats(), _addListAutoformats(), afterInit(), ca(), getData() (+2 more)
-
 ### Community 23 - "Community 23"
-Cohesion: 0.08
-Nodes (5): hn(), op(), pd(), rp(), un()
+Cohesion: 0.09
+Nodes (4): hn(), op(), ro(), rp()
 
 ### Community 25 - "Community 25"
-Cohesion: 0.10
-Nodes (8): hu(), kl, ku, ph, ql(), Uu, vh, Yl
+Cohesion: 0.09
+Nodes (9): gh(), jl, kl, ku, ph, qh(), ql(), vh (+1 more)
 
-### Community 28 - "Community 28"
-Cohesion: 0.13
-Nodes (5): Dh(), qn(), rn(), Sh(), Th()
+### Community 26 - "Community 26"
+Cohesion: 0.12
+Nodes (3): du, mu, rd
+
+### Community 27 - "Community 27"
+Cohesion: 0.06
+Nodes (5): fe(), hd(), ju(), md(), Ze()
 
 ### Community 31 - "Community 31"
 Cohesion: 0.08
-Nodes (14): bf(), df(), Gf, hf(), jf(), jt(), kf(), qf() (+6 more)
+Nodes (15): bf(), df(), Gf, hf(), jf(), jt(), kf(), qf() (+7 more)
 
 ### Community 32 - "Community 32"
-Cohesion: 0.10
-Nodes (7): al(), bp(), cd(), ld(), pf(), sf, vp
+Cohesion: 0.11
+Nodes (24): an(), bi(), co(), E(), ee(), Ge(), Hi(), hl() (+16 more)
+
+### Community 33 - "Community 33"
+Cohesion: 0.14
+Nodes (25): bl(), bt(), ct(), et(), ft(), gt(), hs(), ht() (+17 more)
+
+### Community 34 - "Community 34"
+Cohesion: 0.08
+Nodes (5): beforeDestroy(), fs(), ss(), stopListening(), updateSourceElement()
+
+### Community 36 - "Community 36"
+Cohesion: 0.15
+Nodes (4): If(), _normalizeWordInput(), Ru(), zu
 
 ### Community 37 - "Community 37"
 Cohesion: 0.11
 Nodes (7): jd, kd(), Qd(), vd(), Xd(), yd(), zd()
 
-### Community 39 - "Community 39"
-Cohesion: 0.14
-Nodes (9): cf(), de(), It(), Ks(), ll(), _normalizeWordInput(), Ol(), os() (+1 more)
-
-### Community 40 - "Community 40"
-Cohesion: 0.08
-Nodes (3): As(), cl, ul()
-
 ### Community 41 - "Community 41"
-Cohesion: 0.08
-Nodes (4): dn(), nr(), ps(), stopDelegating()
+Cohesion: 0.33
+Nodes (5): Ah(), Fd(), Ha(), ua(), Va()
+
+### Community 42 - "Community 42"
+Cohesion: 0.20
+Nodes (5): js(), Ta(), Vs(), ws(), zs()
 
 ### Community 43 - "Community 43"
-Cohesion: 0.12
-Nodes (4): Gu(), so(), Xs(), yu
+Cohesion: 0.08
+Nodes (5): Gs(), Ms(), so(), Xs(), yu
 
-### Community 44 - "Community 44"
-Cohesion: 0.10
-Nodes (4): ds(), ep(), np(), tp()
-
-### Community 47 - "Community 47"
-Cohesion: 0.21
-Nodes (4): Iu(), lu(), oc, wu
+### Community 46 - "Community 46"
+Cohesion: 0.15
+Nodes (5): Fc(), sp, wd, yc(), zc()
 
 ### Community 48 - "Community 48"
-Cohesion: 0.22
-Nodes (5): bs(), Ea(), qs(), Ta(), ws()
+Cohesion: 0.26
+Nodes (3): bs(), Ea(), qs()
 
 ### Community 49 - "Community 49"
-Cohesion: 0.11
-Nodes (5): ad, fa, qa(), sa(), tu()
+Cohesion: 0.06
+Nodes (7): fa, fl, init(), lh, tu(), ya, Zl
 
 ### Community 50 - "Community 50"
-Cohesion: 0.17
-Nodes (25): at(), au(), be(), bt(), ce(), ct(), et(), ft() (+17 more)
-
-### Community 52 - "Community 52"
-Cohesion: 0.17
-Nodes (15): MapInner, UnionMap(), na(), YourAreaPanel(), ClimateSummary, CropDef, FarmerInput, RotationDef (+7 more)
+Cohesion: 0.23
+Nodes (26): a(), ae(), at(), b(), be(), ce(), D(), Ei() (+18 more)
 
 ### Community 53 - "Community 53"
-Cohesion: 0.18
-Nodes (16): mergeAdvice(), RotationAdvice, rotationAdviceSchema, rotationSchema, scorerFallbackAdvice(), seasonCrop, AdviceSource, callGroq() (+8 more)
+Cohesion: 0.13
+Nodes (29): cardRotation(), marketNote(), optionsOf(), POST(), zoneNote(), confidenceLevel(), Explanation, explanationSchema (+21 more)
 
 ### Community 54 - "Community 54"
 Cohesion: 0.10
 Nodes (19): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+11 more)
 
-### Community 55 - "Community 55"
-Cohesion: 0.11
-Nodes (6): bd(), Fc(), sp, wd, yc(), zc()
-
 ### Community 56 - "Community 56"
-Cohesion: 0.10
-Nodes (3): ap, od, td
+Cohesion: 0.08
+Nodes (12): ac, _addBasicStylesAutoformats(), _addBlockQuoteAutoformats(), _addHeadingAutoformats(), _addListAutoformats(), afterInit(), getData(), Il() (+4 more)
+
+### Community 57 - "Community 57"
+Cohesion: 0.13
+Nodes (7): Ba(), ka(), rs(), vr(), wa(), xa, Za()
 
 ### Community 59 - "Community 59"
-Cohesion: 0.15
-Nodes (20): dataPath(), ROOT, BARC_CROP_MAP, BarcFit, FRS_CROP_NAMES, getBarcFit(), getUnionSoilProfile(), loadBarc() (+12 more)
+Cohesion: 0.24
+Nodes (14): dataPath(), BARC_CROP_MAP, BarcFit, FRS_CROP_NAMES, getBarcFit(), getUnionSoilProfile(), loadBarc(), loadFrs() (+6 more)
 
 ### Community 60 - "Community 60"
 Cohesion: 0.12
 Nodes (16): 6.10. HLS v2.0, 6.11. Landsat ARD, 6.12. EMIT L1B Radiance and L2A Reflectance, 6.13. EMIT L2B Estimated Mineral Identification, Band Depth and Uncertainty, 6.14.  NASA VIIRS Snow Products (Includes Suomi NPP, NOAA-20, and NOAA-21), 6.15. PACE OCI Level-3 Global Mapped Surface Reflectance Data, 6.1. MODIS Land Products (Terra, Aqua, & Combined), 6.2. MODIS Snow Products (Terra and Aqua) (+8 more)
 
-### Community 63 - "Community 63"
-Cohesion: 0.10
-Nodes (22): bi(), co(), ee(), fire(), Hi(), I(), j(), ki() (+14 more)
+### Community 61 - "Community 61"
+Cohesion: 0.21
+Nodes (13): decisionQuestions(), interpretJev(), JevAnswer, jevDecision, lineFor(), postJev(), Question, topId() (+5 more)
 
 ### Community 65 - "Community 65"
-Cohesion: 0.29
-Nodes (11): POST(), GET(), powerGridKey(), buildLlmPayload(), enrichClimateWithSatellite(), getSatelliteSummary(), listStored(), loadStored() (+3 more)
+Cohesion: 0.19
+Nodes (3): Ti(), xn(), zn()
+
+### Community 66 - "Community 66"
+Cohesion: 0.18
+Nodes (4): bd(), fh(), pd(), ul()
 
 ### Community 67 - "Community 67"
-Cohesion: 0.12
-Nodes (5): bc, fu(), gc, Mc(), vc
+Cohesion: 0.21
+Nodes (4): gc, hu(), Mc(), Uu
 
 ### Community 68 - "Community 68"
-Cohesion: 0.20
-Nodes (19): cacheDir(), cacheKey(), readCache(), writeCache(), samplesPath(), countHotDays(), DAYS, fetchPower() (+11 more)
+Cohesion: 0.13
+Nodes (28): GET(), cacheDir(), cacheKey(), readCache(), writeCache(), ROOT, samplesPath(), countHotDays() (+20 more)
 
 ### Community 69 - "Community 69"
 Cohesion: 0.14
@@ -355,53 +363,61 @@ Nodes (14): 4.10. Landsat Collection 2 ARD, 4.11. US NPS Water Balance, 4.12. EM
 Cohesion: 0.14
 Nodes (14): 5.1.1. ECOSTRESS Swath V2, 5.1.2. ECOSTRESS Tiled V2, 5.1. ECOSTRESS, 5.2.1. Suomi NPP VIIRS Land Surface Phenology Product (VNP22Q2), 5.2. NASA VIIRS SNPP, NOAA-20, and NOAA-21, 5.3.1. SMAP Enhanced L3 Radiometer Global and Polar Grid Daily 9 km EASE-Grid Soil Moisture (SPL3SMP_E), 5.3.2. SMAP L4 Global 3-hourly 9 km EASE-Grid Surface and Root Zone Soil Moisture Geophysical Data (SPL4SMGP), 5.3. SMAP (+6 more)
 
-### Community 72 - "Community 72"
-Cohesion: 0.18
-Nodes (3): Il(), nl(), Rl()
+### Community 73 - "Community 73"
+Cohesion: 0.48
+Nodes (5): getUnion(), loadPilotUnions(), PilotUnion, ruralUnions(), GET()
 
-### Community 79 - "Community 79"
-Cohesion: 0.22
-Nodes (4): cn(), kn(), xn(), zn()
+### Community 75 - "Community 75"
+Cohesion: 0.20
+Nodes (3): bc, fu(), vc
+
+### Community 80 - "Community 80"
+Cohesion: 0.40
+Nodes (3): Aa(), ia(), na()
 
 ### Community 81 - "Community 81"
-Cohesion: 0.12
-Nodes (4): ka(), mo(), value(), wa()
+Cohesion: 0.08
+Nodes (3): es(), Jo(), ts()
 
-### Community 82 - "Community 82"
-Cohesion: 0.13
-Nodes (3): eo(), ko(), kr()
+### Community 84 - "Community 84"
+Cohesion: 0.11
+Nodes (8): Dh(), ep(), np(), qn(), rn(), Sh(), Th(), tp()
+
+### Community 85 - "Community 85"
+Cohesion: 0.18
+Nodes (3): Dd, nf, ou
 
 ### Community 86 - "Community 86"
-Cohesion: 0.25
-Nodes (3): cc, kc(), wc
+Cohesion: 0.07
+Nodes (3): nr(), ps(), stopDelegating()
 
-### Community 87 - "Community 87"
-Cohesion: 0.33
-Nodes (4): Ha(), lc(), ua(), Va()
+### Community 88 - "Community 88"
+Cohesion: 0.12
+Nodes (4): ad, id, la, Oa()
 
 ### Community 90 - "Community 90"
 Cohesion: 0.20
 Nodes (9): 10. Feedback, 1. Request Parameters, 2. Request File Listing, 3. Point Sample Extraction Process, 7. Sample Request Retention, 8. Data Product Citations, 9. Software Citation, AppEEARS Point Sample Extraction Readme (+1 more)
 
-### Community 92 - "Community 92"
-Cohesion: 0.18
-Nodes (6): Nt(), ue(), Vs(), warn(), ys(), zs()
+### Community 94 - "Community 94"
+Cohesion: 0.22
+Nodes (3): Da(), off(), once()
 
 ### Community 95 - "Community 95"
 Cohesion: 0.38
 Nodes (9): aggregate_smap(), download_bundle(), login(), main(), parse_ndvi_csv(), parse_smap_csv(), process_zip(), submit() (+1 more)
 
 ### Community 104 - "Community 104"
-Cohesion: 0.25
-Nodes (7): Fetch / refresh NASA data, Field Shift — NASA Space Apps 2026, Prerequisites, Project layout, Setup, Still mocked or placeholder, Tests and demo
+Cohesion: 0.40
+Nodes (4): Data, Field Shift — NASA Space Apps 2026, Run, Tests
 
 ### Community 105 - "Community 105"
 Cohesion: 0.32
 Nodes (3): form(), Read-only scraper for the SRDI Online Fertilizer Recommendation System (frs-bd.c, S
 
-### Community 115 - "Community 115"
-Cohesion: 0.40
-Nodes (3): geistMono, geistSans, metadata
+### Community 111 - "Community 111"
+Cohesion: 0.18
+Nodes (3): qa(), Ra(), sa()
 
 ### Community 117 - "Community 117"
 Cohesion: 0.40
@@ -411,24 +427,76 @@ Nodes (4): compat, __dirname, eslintConfig, __filename
 Cohesion: 0.67
 Nodes (3): 4.6.1. ECOSTRESS Swath V2, 4.6.2. ECOSTRESS Tiled V2, 4.6. ECOSTRESS
 
-### Community 139 - "Community 139"
-Cohesion: 0.40
-Nodes (3): Aa(), ia(), na()
+### Community 140 - "Community 140"
+Cohesion: 0.24
+Nodes (4): bu(), ma(), mi(), Pi()
+
+### Community 142 - "Community 142"
+Cohesion: 0.23
+Nodes (3): dr(), rr(), wn()
+
+### Community 143 - "Community 143"
+Cohesion: 0.15
+Nodes (7): af(), ef, Hc(), lc(), pf(), sf, Tf()
+
+### Community 144 - "Community 144"
+Cohesion: 0.29
+Nodes (6): Design principles, Frontend Design, Ground your designs in the subject matter, More on writing in design, Process: plan, review against the brief, build, critique, Restraint and self-critique
+
+### Community 146 - "Community 146"
+Cohesion: 0.50
+Nodes (3): Field Shift image set, Shared style, What to generate
+
+### Community 150 - "Community 150"
+Cohesion: 0.50
+Nodes (3): Avoid, Plot backdrop, Prompt
+
+### Community 151 - "Community 151"
+Cohesion: 0.50
+Nodes (3): Avoid, Farmer, Prompt
+
+### Community 153 - "Community 153"
+Cohesion: 0.20
+Nodes (3): cn(), kn(), ln()
+
+### Community 158 - "Community 158"
+Cohesion: 0.50
+Nodes (3): Avoid, Mustard, Prompt
+
+### Community 160 - "Community 160"
+Cohesion: 0.50
+Nodes (3): Avoid, Lentil, Prompt
+
+### Community 161 - "Community 161"
+Cohesion: 0.50
+Nodes (3): Avoid, Maize, Prompt
+
+### Community 162 - "Community 162"
+Cohesion: 0.50
+Nodes (3): Avoid, Prompt, Seedling
+
+### Community 163 - "Community 163"
+Cohesion: 0.50
+Nodes (3): Avoid, Prompt, Well
+
+### Community 164 - "Community 164"
+Cohesion: 0.50
+Nodes (3): Avoid, Bucket, Prompt
 
 ## Knowledge Gaps
-- **192 isolated node(s):** `geistSans`, `geistMono`, `metadata`, `REASON_LABEL`, `UnionRow` (+187 more)
+- **221 isolated node(s):** `beVietnam`, `metadata`, `REASON_LABEL`, `UnionRow`, `CROPS` (+216 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **65 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **58 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `_()` connect `Community 2` to `Community 0`, `Community 1`, `Community 3`, `Community 4`, `Community 5`, `Community 6`, `Community 7`, `Community 9`, `Community 12`, `Community 13`, `Community 14`, `Community 15`, `Community 16`, `Community 17`, `Community 18`, `Community 19`, `Community 22`, `Community 23`, `Community 24`, `Community 25`, `Community 26`, `Community 27`, `Community 28`, `Community 30`, `Community 31`, `Community 32`, `Community 33`, `Community 34`, `Community 35`, `Community 36`, `Community 37`, `Community 38`, `Community 39`, `Community 40`, `Community 41`, `Community 42`, `Community 43`, `Community 44`, `Community 45`, `Community 46`, `Community 47`, `Community 48`, `Community 49`, `Community 50`, `Community 51`, `Community 55`, `Community 56`, `Community 57`, `Community 58`, `Community 61`, `Community 63`, `Community 64`, `Community 66`, `Community 67`, `Community 72`, `Community 73`, `Community 74`, `Community 75`, `Community 76`, `Community 77`, `Community 78`, `Community 79`, `Community 80`, `Community 81`, `Community 82`, `Community 83`, `Community 84`, `Community 85`, `Community 86`, `Community 87`, `Community 88`, `Community 89`, `Community 91`, `Community 92`, `Community 94`, `Community 96`, `Community 97`, `Community 98`, `Community 99`, `Community 100`, `Community 101`, `Community 102`, `Community 103`, `Community 106`, `Community 107`, `Community 108`, `Community 109`, `Community 111`, `Community 112`, `Community 113`, `Community 114`, `Community 118`, `Community 119`, `Community 121`, `Community 122`, `Community 139`, `Community 143`, `Community 144`, `Community 145`?**
-  _High betweenness centrality (0.384) - this node is a cross-community bridge._
-- **Why does `r()` connect `Community 14` to `Community 0`, `Community 2`, `Community 4`, `Community 6`, `Community 140`, `Community 141`, `Community 13`, `Community 15`, `Community 16`, `Community 18`, `Community 19`, `Community 22`, `Community 23`, `Community 31`, `Community 32`, `Community 37`, `Community 39`, `Community 40`, `Community 43`, `Community 46`, `Community 50`, `Community 51`, `Community 63`, `Community 64`, `Community 74`, `Community 75`, `Community 77`, `Community 81`, `Community 82`, `Community 91`, `Community 96`, `Community 110`, `Community 116`, `Community 119`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
-- **Why does `ar()` connect `Community 51` to `Community 2`, `Community 4`, `Community 7`, `Community 139`, `Community 140`, `Community 14`, `Community 16`, `Community 18`, `Community 22`, `Community 23`, `Community 25`, `Community 29`, `Community 30`, `Community 31`, `Community 40`, `Community 63`, `Community 81`, `Community 84`, `Community 96`, `Community 103`, `Community 110`, `Community 111`?**
-  _High betweenness centrality (0.036) - this node is a cross-community bridge._
+- **Why does `_()` connect `Community 2` to `Community 0`, `Community 1`, `Community 3`, `Community 4`, `Community 6`, `Community 7`, `Community 12`, `Community 13`, `Community 14`, `Community 15`, `Community 16`, `Community 17`, `Community 18`, `Community 19`, `Community 22`, `Community 23`, `Community 24`, `Community 25`, `Community 26`, `Community 27`, `Community 28`, `Community 29`, `Community 30`, `Community 31`, `Community 32`, `Community 33`, `Community 34`, `Community 35`, `Community 36`, `Community 37`, `Community 38`, `Community 39`, `Community 40`, `Community 41`, `Community 42`, `Community 43`, `Community 44`, `Community 45`, `Community 46`, `Community 47`, `Community 48`, `Community 49`, `Community 50`, `Community 51`, `Community 52`, `Community 55`, `Community 56`, `Community 57`, `Community 58`, `Community 62`, `Community 64`, `Community 65`, `Community 66`, `Community 67`, `Community 71`, `Community 72`, `Community 74`, `Community 75`, `Community 76`, `Community 77`, `Community 78`, `Community 79`, `Community 80`, `Community 81`, `Community 82`, `Community 83`, `Community 84`, `Community 85`, `Community 86`, `Community 87`, `Community 88`, `Community 89`, `Community 92`, `Community 93`, `Community 94`, `Community 96`, `Community 97`, `Community 98`, `Community 99`, `Community 100`, `Community 102`, `Community 106`, `Community 108`, `Community 110`, `Community 111`, `Community 112`, `Community 113`, `Community 122`, `Community 140`, `Community 142`, `Community 143`, `Community 148`, `Community 153`, `Community 157`?**
+  _High betweenness centrality (0.354) - this node is a cross-community bridge._
+- **Why does `r()` connect `Community 14` to `Community 0`, `Community 1`, `Community 2`, `Community 4`, `Community 5`, `Community 7`, `Community 140`, `Community 13`, `Community 142`, `Community 15`, `Community 17`, `Community 18`, `Community 148`, `Community 22`, `Community 23`, `Community 24`, `Community 29`, `Community 30`, `Community 31`, `Community 32`, `Community 33`, `Community 35`, `Community 36`, `Community 37`, `Community 43`, `Community 44`, `Community 50`, `Community 51`, `Community 56`, `Community 57`, `Community 62`, `Community 64`, `Community 81`, `Community 86`, `Community 91`, `Community 96`?**
+  _High betweenness centrality (0.041) - this node is a cross-community bridge._
+- **Why does `ar()` connect `Community 51` to `Community 2`, `Community 7`, `Community 140`, `Community 13`, `Community 14`, `Community 15`, `Community 17`, `Community 148`, `Community 23`, `Community 24`, `Community 29`, `Community 32`, `Community 33`, `Community 44`, `Community 50`, `Community 56`, `Community 57`, `Community 67`, `Community 72`, `Community 80`, `Community 91`, `Community 96`, `Community 98`?**
+  _High betweenness centrality (0.021) - this node is a cross-community bridge._
 - **Are the 15 inferred relationships involving `r()` (e.g. with `.isBefore()` and `.compareWith()`) actually correct?**
   _`r()` has 15 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 9 inferred relationships involving `to()` (e.g. with `na()` and `gn()`) actually correct?**

@@ -231,6 +231,8 @@ export type ScoreInput = {
 
 export type ScoreResult = {
   candidates: ScoredCandidate[];
+  /** Water-ok pool before the top-5 slice. Jev may only pick from this list. */
+  allowed: ScoredCandidate[];
   baseline_irrigation_mm: number;
   current_rotation_id: string;
 };
@@ -331,6 +333,7 @@ export function scoreRotations(input: ScoreInput): ScoreResult {
 
   return {
     candidates: top5,
+    allowed: withScores,
     baseline_irrigation_mm: baselineIrr,
     current_rotation_id: current.rotation_id,
   };

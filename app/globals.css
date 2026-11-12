@@ -1,41 +1,347 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f5f4;
-  --foreground: #333333;
-  --text-body: #333333;
-  --text-title: #14532d;
-  --surface-card: #ffffff;
-  --surface-page: #f5f5f4;
-  --text-link: #14532d;
-  --confidence-bg: #fffbeb;
-  --confidence-text: #78350f;
+  --field: #07140e;
+  --ink: #f4f7f2;
+  --muted: #b7c4b8;
+  --lime: #d8f34a;
+  --lime-ink: #12210f;
+  --line: rgba(255, 255, 255, 0.16);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-text-body: var(--text-body);
-  --color-text-title: var(--text-title);
-  --color-surface-card: var(--surface-card);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--field);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-be-vietnam);
+}
+
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
 }
 
 body {
-  background: var(--surface-page);
-  color: var(--text-body);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--field);
+  color: var(--ink);
+  font-family: var(--font-be-vietnam), sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.5;
 }
 
-.text-body {
-  color: var(--text-body);
+h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
 }
 
-.text-title {
-  color: var(--text-title);
+h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
-.text-link {
-  color: var(--text-link);
+.shell {
+  width: min(76rem, calc(100% - 1.25rem));
+  margin: 0.7rem auto 0;
+}
+
+.hero {
+  position: relative;
+  height: clamp(22rem, 62vw, 40rem);
+  overflow: hidden;
+  border-radius: 1.6rem;
+}
+
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+}
+
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7, 20, 14, 0.55) 0%, rgba(7, 20, 14, 0.05) 38%, rgba(7, 20, 14, 0.72) 100%);
+}
+
+.hero-bar,
+.hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  padding: 1rem 1.15rem;
+}
+
+.brand {
+  color: white;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+
+.nav-links a {
+  color: white;
+  padding: 0.42rem 0.9rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.nav-links a[aria-current="page"] {
+  background: var(--lime);
+  color: var(--lime-ink);
+  font-weight: 600;
+}
+
+.hero-copy {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0 1.4rem 1.6rem;
+}
+
+.kicker {
+  display: inline-block;
+  margin-bottom: 0.7rem;
+  padding: 0.28rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  color: white;
+  font-size: 0.92rem;
+}
+
+.hero-copy h1 {
+  max-width: 12ch;
+  color: white;
+  font-size: clamp(3.4rem, 8vw, 6.4rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.92;
+}
+
+.column {
+  width: min(42rem, 100%);
+  margin-inline: auto;
+  padding: 2.4rem 0.2rem 4rem;
+}
+
+.column > * + * {
+  margin-top: 1.75rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.farm-name {
+  color: var(--muted);
+}
+
+.field {
+  display: block;
+  margin-bottom: 0.9rem;
+  color: var(--muted);
+}
+
+.field input,
+.field select {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+  color-scheme: dark;
+  font: inherit;
+}
+
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1rem;
+  margin-top: 0.45rem;
+  color: var(--ink);
+}
+
+.action {
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.95rem 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--lime-ink);
+  font: inherit;
+  font-weight: 700;
+}
+
+.action:active {
+  transform: translateY(1px);
+}
+
+.action:disabled {
+  opacity: 0.55;
+}
+
+fieldset {
+  margin: 0 0 0.9rem;
+  border: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+.decision-name {
+  color: white;
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+.unsure {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(216, 243, 74, 0.16);
+  color: var(--lime);
+}
+
+.zone-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.zone-row p {
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--line);
+}
+
+.zone-n {
+  display: block;
+  color: white;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.zone-crop {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+.score-list {
+  margin: 0;
+}
+
+.score-list div {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.score-list dt {
+  color: var(--muted);
+}
+
+.score-list dd {
+  margin: 0;
+  color: var(--lime);
+  font-weight: 600;
+}
+
+.plain-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plain-list li + li {
+  margin-top: 0.35rem;
+}
+
+.seasons {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.map-frame {
+  height: 16rem;
+  overflow: hidden;
+  border-radius: 1.25rem;
+}
+
+a {
+  color: var(--lime);
+}
+
+.brand,
+.nav-links a {
+  color: white;
+}
+
+.nav-links a[aria-current="page"] {
+  color: var(--lime-ink);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+}
+
+input[type="checkbox"],
+input[type="range"] {
+  accent-color: var(--lime);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    height: 24rem;
+    border-radius: 1.15rem;
+  }
+
+  .zone-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action:active {
+    transform: none;
+  }
 }
