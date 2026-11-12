@@ -16,6 +16,16 @@ export const explanationSchema = z.object({
   soil_explanation: z.string().max(400),
   water_note: z.string().max(400),
   uncertainty_note: z.string().max(400),
+  bn: z
+    .object({
+      summary: z.string().max(1200),
+      reasons: z.array(z.string().max(600)).max(4),
+      risks: z.array(z.object({ risk: z.string().max(400), mitigation: z.string().max(400) })).max(3),
+      soil_explanation: z.string().max(600),
+      water_note: z.string().max(600),
+      uncertainty_note: z.string().max(600),
+    })
+    .optional(),
 });
 
 export type Explanation = z.infer<typeof explanationSchema>;

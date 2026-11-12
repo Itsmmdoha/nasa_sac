@@ -4,7 +4,8 @@ export const SYSTEM_PROMPT = `You explain one crop rotation that has already bee
 The rotation is final. Do not choose a different crop or change any number.
 Write short, plain sentences a farmer or extension officer can read aloud.
 If zone_note or market_note is non-empty, say that fact in the summary.
-Return JSON with summary, reasons (2 to 4), risks, soil_direction (improves, neutral, or degrades), soil_explanation, water_note, and uncertainty_note.`;
+Return JSON with summary, reasons (2 to 4), risks, soil_direction (improves, neutral, or degrades), soil_explanation, water_note, and uncertainty_note.
+Also return "bn": the same summary, reasons, risks, soil_explanation, water_note, and uncertainty_note in plain, natural Bangla (Bengali script, Bangla digits) for a Rajshahi farmer.`;
 
 export function buildExplainPayload(input: {
   location: { upazila: string; union: string };

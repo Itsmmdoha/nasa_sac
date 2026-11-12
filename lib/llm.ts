@@ -3,6 +3,7 @@ import { cacheKey, readCache, writeCache } from "./cache";
 import { explanationSchema, templateExplanation, type Explanation } from "./advice";
 import { SYSTEM_PROMPT } from "./prompt";
 import type { ScoredCandidate, UnionSoilProfile } from "./types";
+import { templateExplanationBn } from "./advice-bn";
 
 export type ExplainSource = "groq" | "cache" | "scorer" | "mock";
 
@@ -36,8 +37,31 @@ const explainJsonSchema = {
     soil_explanation: { type: "string" },
     water_note: { type: "string" },
     uncertainty_note: { type: "string" },
+    bn: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        summary: { type: "string" },
+        reasons: { type: "array", items: { type: "string" }, maxItems: 4 },
+        risks: {
+          type: "array",
+          maxItems: 3,
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: { risk: { type: "string" }, mitigation: { type: "string" } },
+            required: ["risk", "mitigation"],
+          },
+        },
+        soil_explanation: { type: "string" },
+        water_note: { type: "string" },
+        uncertainty_note: { type: "string" },
+      },
+      required: ["summary", "reasons", "risks", "soil_explanation", "water_note", "uncertainty_note"],
+    },
   },
   required: [
+    "bn",
     "summary",
     "reasons",
     "risks",
@@ -79,7 +103,7 @@ async function callGroq(payload: object, model: string, strict: boolean): Promis
         strict,
       },
     },
-    max_completion_tokens: 1200,
+    max_completion_tokens: 3000,
     reasoning_effort: "low",
     // @ts-expect-error Groq-specific
     include_reasoning: false,
@@ -95,15 +119,27 @@ export async function explainAssignment(input: {
   soil: UnionSoilProfile;
   zoneNote: string;
   marketNote: string;
+  zoneNoteBn?: string;
+  marketNoteBn?: string;
 }): Promise<{ explanation: Explanation; source: ExplainSource; fallback_reason?: ExplainFallback }> {
-  const template = () =>
-    templateExplanation(input.candidate, input.soil, input.zoneNote, input.marketNote);
+  const templateBn = () =>
+    templateExplanationBn(
+      input.candidate,
+      input.soil,
+      input.zoneNoteBn ?? "",
+      input.marketNoteBn ?? ""
+    );
+  const template = (): Explanation => ({
+    ...templateExplanation(input.candidate, input.soil, input.zoneNote, input.marketNote),
+    bn: templateBn(),
+  });
+  const withBn = (e: Explanation): Explanation => (e.bn ? e : { ...e, bn: templateBn() });
 
-  const hash = cacheKey("explain", input.payload);
+  const hash = cacheKey("explain_v2", input.payload);
   const cached = readCache<Explanation>(hash);
   if (cached) {
     const parsed = explanationSchema.safeParse(cached);
-    if (parsed.success) return { explanation: parsed.data, source: "cache" };
+    if (parsed.success) return { explanation: withBn(parsed.data), source: "cache" };
   }
 
   if (mockForced()) {
@@ -133,7 +169,7 @@ export async function explainAssignment(input: {
       }
     }
     writeCache(hash, explanation);
-    return { explanation, source: "groq", fallback_reason: reason };
+    return { explanation: withBn(explanation), source: "groq", fallback_reason: reason };
   } catch (e) {
     const status = errorStatus(e);
     const reason: ExplainFallback =

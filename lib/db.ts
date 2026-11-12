@@ -6,6 +6,7 @@ import {
   type CropOption,
   type ZoneHolder,
 } from "./zone";
+import { farmId } from "./farm-id";
 
 let pool: Pool | null = null;
 let ready: Promise<void> | null = null;
@@ -13,7 +14,7 @@ let ready: Promise<void> | null = null;
 export function getPool(): Pool {
   const url = process.env.DATABASE_URL?.trim();
   if (!url) throw new Error("DATABASE_URL is not set");
-  if (!pool) pool = new Pool({ connectionString: url });
+  if (!pool) pool = new Pool({ connectionString: url, connectionTimeoutMillis: 2500 });
   return pool;
 }
 
@@ -51,14 +52,7 @@ export async function ensureSchema(): Promise<void> {
   return ready;
 }
 
-export function farmId(upazila: string, name: string): string {
-  const slug = name
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^\p{L}\p{N}-]/gu, "");
-  return `${upazila.trim().toLowerCase()}:${slug || "farm"}`;
-}
+export { farmId };
 
 export function isDbDown(e: unknown): boolean {
   if (e instanceof AggregateError) return e.errors.some((err) => isDbDown(err));
@@ -125,7 +119,7 @@ export type SavedDecision = {
   priority: boolean;
 };
 
-export async function persistDecision(input: {
+export type PersistInput = {
   farmName: string;
   upazila: string;
   unionName: string;
@@ -136,7 +130,9 @@ export async function persistDecision(input: {
   confidence: number | null;
   unsure: boolean;
   glutCrops: string[];
-}): Promise<SavedDecision> {
+};
+
+export async function persistDecision(input: PersistInput): Promise<SavedDecision> {
   await ensureSchema();
   const id = farmId(input.upazila, input.farmName);
   const client = await getPool().connect();

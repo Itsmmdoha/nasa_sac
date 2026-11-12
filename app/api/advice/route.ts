@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { confidenceLevel, type Explanation } from "@/lib/advice";
-import { farmId, isDbDown, persistDecision } from "@/lib/db";
+import { farmId } from "@/lib/db";
+import { saveDecision } from "@/lib/zone-store";
+import { marketNoteBn, rotationNameBn, zoneNoteBn } from "@/lib/advice-bn";
 import { jevDecision } from "@/lib/jev";
 import { explainAssignment } from "@/lib/llm";
-import { loadHeadlines, type MarketSignal } from "@/lib/market";
+import { keywordGlut, loadHeadlines, type MarketSignal } from "@/lib/market";
 import { buildExplainPayload } from "@/lib/prompt";
 import { getClimateSummary } from "@/lib/power";
 import { scoreRotations } from "@/lib/scoring";
@@ -22,10 +24,10 @@ function optionsOf(allowed: ScoredCandidate[]): CropOption[] {
   }));
 }
 
-function marketNote(market: MarketSignal[], decisionSource: string): string {
-  if (decisionSource !== "jev") return "Market check unavailable.";
+function marketNote(market: MarketSignal[], source: "jev" | "keywords" | "none"): string {
+  if (source === "none") return "Market check unavailable.";
   const glut = market.filter((m) => m.glut).map((m) => m.crop);
-  if (!glut.length) return "No headline cleared the glut bar.";
+  if (!glut.length) return "No headline shows an early glut for the crops on your list.";
   return `Market headlines show an early glut for ${glut.join(", ")}.`;
 }
 
@@ -102,35 +104,30 @@ export async function POST(req: Request) {
     ph: soil.ph_median,
     rabiRainMm: climate.rabi_rain_normal_mm,
   });
-  const market = decision.market;
+  const headlines = loadHeadlines();
+  let market = decision.market;
+  let marketSource: "jev" | "keywords" | "none" = decision.source === "jev" ? "jev" : "none";
+  if (marketSource !== "jev" && headlines.length) {
+    market = keywordGlut(headlines);
+    marketSource = "keywords";
+  }
   const best =
     scored.allowed.find((c) => c.rotation_id === decision.rotation_id) ?? scored.allowed[0]!;
   const season = seasonKey();
-  const noteMarket = marketNote(market, decision.source);
+  const noteMarket = marketNote(market, marketSource);
 
-  let saved;
-  try {
-    saved = await persistDecision({
-      farmName: farmer.farm_name,
-      upazila: farmer.upazila,
-      unionName: farmer.union,
-      season,
-      previousSeason: previousSeasonKey(season),
-      individualBestRotationId: best.rotation_id,
-      options: optionsOf(scored.allowed),
-      confidence: decision.confidence,
-      unsure: decision.unsure,
-      glutCrops: market.filter((m) => m.glut).map((m) => m.crop),
-    });
-  } catch (e) {
-    if (isDbDown(e)) {
-      return NextResponse.json(
-        { error: "Database is not running. Start it with docker compose up -d" },
-        { status: 503 }
-      );
-    }
-    throw e;
-  }
+  const saved = await saveDecision({
+    farmName: farmer.farm_name,
+    upazila: farmer.upazila,
+    unionName: farmer.union,
+    season,
+    previousSeason: previousSeasonKey(season),
+    individualBestRotationId: best.rotation_id,
+    options: optionsOf(scored.allowed),
+    confidence: decision.confidence,
+    unsure: decision.unsure,
+    glutCrops: market.filter((m) => m.glut).map((m) => m.crop),
+  });
 
   const assigned =
     scored.allowed.find((c) => c.rotation_id === saved.result.rotation_id) ?? best;
@@ -149,13 +146,35 @@ export async function POST(req: Request) {
     zoneNote: noteZone,
     marketNote: noteMarket,
   });
+  const noteZoneBn = zoneNoteBn({
+    deferred: saved.result.deferred,
+    displaced: Boolean(saved.result.displaced),
+    best,
+    assigned,
+  });
+  const noteMarketBn = marketNoteBn(market, marketSource);
   const explained = await explainAssignment({
     payload,
     candidate: assigned,
     soil,
     zoneNote: noteZone,
     marketNote: noteMarket,
+    zoneNoteBn: noteZoneBn,
+    marketNoteBn: noteMarketBn,
   });
+
+  const alternatives = scored.allowed
+    .filter((c) => c.rotation_id !== assigned.rotation_id)
+    .slice(0, 4)
+    .map((c) => ({
+      rotation_id: c.rotation_id,
+      name: c.name,
+      name_bn: rotationNameBn(c),
+      rabi_crop: c.seasons.rabi.crop,
+      overall: c.scores.overall,
+      water: c.scores.water,
+      irrigation_mm: c.irrigation_mm,
+    }));
 
   return NextResponse.json({
     advice: {
@@ -174,6 +193,15 @@ export async function POST(req: Request) {
       zone: { upazila: farmer.upazila, season, counts: saved.counts },
       market,
       market_note: noteMarket,
+      market_source: marketSource,
+      alternatives,
+      bn: {
+        rotation_name: rotationNameBn(assigned),
+        individual_best_name: rotationNameBn(best),
+        zone_note: noteZoneBn,
+        market_note: noteMarketBn,
+        ...explained.explanation.bn,
+      },
     },
     meta: {
       source: explained.source,
@@ -183,6 +211,7 @@ export async function POST(req: Request) {
       farm_id: farmId(farmer.upazila, farmer.farm_name),
       baseline_irrigation_mm: scored.baseline_irrigation_mm,
       current_rotation_id: scored.current_rotation_id,
+      store: saved.store,
     },
     context: {
       soil,
