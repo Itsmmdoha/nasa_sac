@@ -1,6 +1,6 @@
 # Field Shift image set
 
-One gouache set for the header of a Barind crop app. The backdrop is the land. The farmer, crops, well, and bucket are separate pictures so they can still sway, grow, and dip.
+One gouache set for the header of a Barind crop app. The backdrop is the land. The farmer, crops, and well are separate pictures so they can sway and grow.
 
 Generate every file with the shared style below. Do not add text, letters, watermarks, or a border.
 
@@ -33,4 +33,3 @@ The place is the Barind tract in Rajshahi: flat, red, cracked, rabi season. Not 
 | `05-maize.md` | `public/field/maize.png` | Tall stalk, droops when water is scarce |
 | `06-seedling.md` | `public/field/seedling.png` | Used when the pick is some other crop |
 | `07-well.md` | `public/field/well.png` | Brick ring on the right, no bucket |
-| `08-bucket.md` | `public/field/bucket.png` | Separate, so it can drop into the well |

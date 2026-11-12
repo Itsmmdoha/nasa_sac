@@ -5,7 +5,7 @@
 export type SceneState = {
   /** Rabi crop of the chosen rotation. */
   pick?: string;
-  /** Water is scarce: maize droops and the bucket drops into the well. */
+  /** Water is scarce: maize droops. */
   dry?: boolean;
 };
 
@@ -29,8 +29,10 @@ export function FieldScene({ state }: { state?: SceneState }) {
       />
       <div className="scene-haze" />
       <div className="scene-cast">
+        <span className="shadow shadow-farmer" />
         <img className="sprite farmer" src="/field/farmer.webp" alt="" />
         <div className="crop-row">
+          <span className="shadow shadow-crops" />
           {SHOWN.map((c) => (
             <img
               key={c}
@@ -42,7 +44,7 @@ export function FieldScene({ state }: { state?: SceneState }) {
           {other ? <img className="sprite crop crop-seedling picked" src="/field/seedling.webp" alt="" /> : null}
         </div>
         <div className="well-group">
-          <img className="sprite bucket" src="/field/bucket.webp" alt="" />
+          <span className="shadow shadow-well" />
           <img className="sprite well" src="/field/well.webp" alt="" />
         </div>
       </div>

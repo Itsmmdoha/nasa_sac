@@ -94,19 +94,11 @@ img { max-width: 100%; }
 .is-dry .crop-maize { animation: droop 2.4s ease-out forwards; filter: saturate(.55) sepia(.25); }
 .well-group { position: absolute; right: 9%; bottom: 0; height: 58%; aspect-ratio: 1 / 1; }
 .well { right: 0; height: 100%; z-index: 2; }
-.bucket { left: 40%; height: 46%; bottom: 90%; z-index: 1; transform-origin: 50% 0; animation: bucket 9s ease-in-out infinite; }
-.is-dry .bucket { animation-duration: 5s; }
 
 @keyframes sway { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(2.2deg); } }
 @keyframes rock { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-1.2deg); } }
 @keyframes grow { 0% { transform: scale(.55); } 70% { transform: scale(1.32); } 100% { transform: scale(1.25); } }
 @keyframes droop { to { transform: rotate(9deg) scaleY(.9); } }
-@keyframes bucket {
-  0%, 30% { transform: translateY(0); }
-  48% { transform: translateY(105%); }
-  60% { transform: translateY(105%); }
-  82%, 100% { transform: translateY(0); }
-}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .crop.picked { transform: scale(1.2); }
@@ -374,3 +366,12 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 @media (max-width: 980px) {
   .masthead:not(.compact) .scene-haze { background: linear-gradient(180deg, rgba(251,244,230,.9) 0%, rgba(251,244,230,.75) 50%, rgba(251,244,230,0) 70%, var(--bg) 100%); }
 }
+
+/* Ground contact so every sprite sits on the clay */
+.shadow { position: absolute; bottom: -2%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgba(92,44,16,.38), rgba(92,44,16,0)); pointer-events: none; }
+.shadow-farmer { left: calc(9% - 1%); width: 12%; }
+.masthead:not(.compact) .shadow-farmer { left: -1%; width: 14%; }
+.shadow-crops { left: 0; right: 0; width: 100%; bottom: -3%; height: 9%; }
+.shadow-well { left: 4%; right: 4%; width: 92%; bottom: -4%; height: 14%; z-index: 0; }
+.masthead.compact .scene-bg { object-position: 50% 58%; }
+.masthead.compact .scene-cast { bottom: 21%; height: 56%; left: 18%; right: 18%; }
