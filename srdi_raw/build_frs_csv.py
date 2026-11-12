@@ -29,6 +29,6 @@ for l in itertools.chain(open('srdi_raw/frs_results.jsonl'),open('srdi_raw/frs_r
             grams_per_decimal=g if g is not None else '',kg_per_ha=round(g*0.2471,1) if g is not None else '',
             note=('' if g is not None else ('not needed' if 'নেই' in amt else ('as needed' if 'মত' in amt else amt))),
             source='SRDI Online Fertilizer Recommendation System (public lookup form)',source_url='http://frs-bd.com/'))
-with open('srdi_frs_fertilizer.csv','w',newline='') as fh:
+with open('data/srdi/srdi_frs_fertilizer.csv','w',newline='') as fh:
     w=csv.DictWriter(fh,fieldnames=list(out[0])); w.writeheader(); w.writerows(out)
 print(len(out))

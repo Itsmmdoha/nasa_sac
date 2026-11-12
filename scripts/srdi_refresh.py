@@ -11,4 +11,4 @@ if __name__ == "__main__":
     if not BUILD.exists():
         print("build_srdi_csv.py not found", file=sys.stderr)
         sys.exit(1)
-    subprocess.check_call([sys.executable, str(BUILD)], cwd=ROOT / "srdi_raw")
+    subprocess.check_call([sys.executable, str(BUILD)], cwd=ROOT)

@@ -9,3 +9,6 @@ secrets/
 *.log
 .DS_Store
 tsconfig.tsbuildinfo
+graphify-out/
+__pycache__/
+*.pyc

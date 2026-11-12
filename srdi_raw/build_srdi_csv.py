@@ -21,7 +21,7 @@ for U,uname in UPZ.items():
             ca_meq100g=p['ca'],mg_meq100g=p['mg'],cu_ppm=p['cu'],fe_ppm=p['fe'],mn_ppm=p['mn'],ec=p['ec'],
             join_note=note,source='SRDI upazila soil survey samples, served by BARC Crop Zoning GeoServer (layer upazila_sol)',source_url=src('upazila_sol',U)))
 rows.sort(key=lambda r:(r['upazila'],r['union'],r['sample_no']))
-with open('srdi_sample.csv','w',newline='') as fh:
+with open('data/srdi/srdi_sample.csv','w',newline='') as fh:
     w=csv.DictWriter(fh,fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
 print('samples',len(rows))
 # map units
@@ -37,6 +37,6 @@ for U,uname in UPZ.items():
           water_recession=p['recession_name'],source='SRDI land & soil database (1:50,000), served by BARC Crop Zoning GeoServer (layer edaphic_data)',
           source_url=src('edaphic_data',U,'&outputFormat=application/json&propertyName='+props)))
 mu.sort(key=lambda r:(r['upazila'],r['map_unit'],r['land_type']))
-with open('srdi_land_units.csv','w',newline='') as fh:
+with open('data/srdi/srdi_land_units.csv','w',newline='') as fh:
     w=csv.DictWriter(fh,fieldnames=list(mu[0])); w.writeheader(); w.writerows(mu)
 print('land units',len(mu))

@@ -41,6 +41,19 @@ node scripts/seed_zone.mjs http://localhost:3000 Godagari
 
 The header art lives in `public/field/` (scene sprites) and `public/crops/` (crop icons); prompts are in `img_prompts/`.
 
+## Layout
+
+| Path | What |
+| --- | --- |
+| `app/`, `components/`, `lib/`, `i18n/` | Next.js app, UI, scoring and zone logic, English and Bangla strings |
+| `data/` | Seed crops and rotations, SRDI CSVs, union list, cached SMAP/MODIS, market headlines |
+| `samples/` | Recorded NASA POWER and AppEEARS responses used as offline fallbacks |
+| `public/field/`, `public/crops/` | Header scene art and crop icons (prompts in `img_prompts/`) |
+| `scripts/` | AppEEARS and SRDI refresh, demo and zone seeding scripts |
+| `srdi_raw/` | Raw SRDI/BARC downloads and the scripts that build `data/srdi/` |
+| `docs/` | How it works and the pipeline diagram |
+| `schemas/` | Explanation output schema |
+
 ## Tests
 
 ```bash

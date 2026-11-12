@@ -253,7 +253,7 @@ We use **[Groq](https://groq.com)**, the fast LLM inference service, on its free
 | **Free-tier limits** (per organisation, per model) | `openai/gpt-oss-120b`: **30 RPM · 1,000 RPD · 8,000 TPM · 200,000 TPD**. `openai/gpt-oss-20b`: **30 RPM · 1,000 RPD · 8,000 TPM · 200,000 TPD**. These are the [rate-limits page](https://console.groq.com/docs/rate-limits) figures. The models page lists the paid Developer plan at 250K TPM / 1K RPM. Your org's actual limits are on [console.groq.com/settings/limits](https://console.groq.com/settings/limits). |
 | What 8K TPM means | One advice call uses about 2.5k prompt tokens plus 1.5–3k output and reasoning tokens. That allows **about 2 calls per minute per model**, so cache responses by payload hash (§6.3) and fall back to the 20b model on `429`. |
 | Errors and headers | Over the limit you get `429` with a `retry-after` header. `x-ratelimit-remaining-requests` counts against RPD, and `x-ratelimit-remaining-tokens` counts against TPM. |
-| Status | ✅ **Tested live on 1 Oct 2026, 13:35 BDT, with `openai/gpt-oss-120b`** in strict mode with our schema (`tools/groq_live_test.py`). HTTP 200 in 3.76 s round-trip. Usage: 1,595 prompt + 1,582 completion = **3,177 tokens**, of which 101 were reasoning. The output validated against the schema. For offline work and demos, keep the mock (`data/mock/llm_response.json`). A starter copy is in `samples/llm_response.mock.json` and validates against the schema. To run the one-call smoke test, use `tools/groq_live_test.py`. |
+| Status | ✅ **Tested live on 1 Oct 2026, 13:35 BDT, with `openai/gpt-oss-120b`** in strict mode with our schema . HTTP 200 in 3.76 s round-trip. Usage: 1,595 prompt + 1,582 completion = **3,177 tokens**, of which 101 were reasoning. The output validated against the schema. For offline work and demos, keep the mock (`data/mock/llm_response.json`). A starter copy is in `samples/llm_response.mock.json` and validates against the schema. |
 
 **Sample request (curl):**
 
@@ -812,12 +812,11 @@ The BARC suitability class per crop comes from `barc_suitability_pilot.csv`, whi
 
 | Path | Purpose |
 |---|---|
-| `BUILD_GUIDE.md` / `.pdf` | This guide |
+| `BUILD_GUIDE.md` | This guide |
 | `.env.example` | Env var names, no values |
 | `schemas/rotation_advice.schema.json` | LLM output schema (Groq strict-mode compatible) |
-| `srdi_sample.csv`, `srdi_land_units.csv`, `srdi_frs_fertilizer.csv`, `barc_suitability_pilot.csv`, `pilot_unions.json` | Real SRDI-based data for the pilot |
+| `data/srdi/*.csv`, `data/pilot_unions.json` | Real SRDI-based data for the pilot |
 | `samples/` | Real POWER and AppEEARS responses, plus the AppEEARS request |
 | `srdi_raw/` | Raw downloads and the scripts that made the CSVs (`build_srdi_csv.py`, `frs_scrape.py`, `frs_run.py`, `build_frs_csv.py`) |
-| `tools/` | Guide template, `fill_guide.py` and `render.mjs` (Markdown → PDF) |
-| `assets/pipeline.mmd`, `.svg`, `.png` | The pipeline diagram |
+| `docs/pipeline.mmd`, `docs/pipeline.svg` | The pipeline diagram |
 | `secrets/` | Credentials (git-ignored; never share) |
