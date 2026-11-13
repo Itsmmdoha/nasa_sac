@@ -146,7 +146,7 @@ function gwetSeasonMean(monthly: PowerFeature, months: number[]): number | null 
 
 export async function getClimateSummary(lat: number, lon: number): Promise<ClimateSummary> {
   const grid_key = powerGridKey(lat, lon);
-  const cached = readCache<ClimateSummary>(cacheKey("climate_summary", { grid_key }));
+  const cached = await readCache<ClimateSummary>(cacheKey("climate_summary", { grid_key }));
   if (cached) return { ...cached, lat, lon };
 
   let clim = await fetchPower("climatology", {
@@ -227,6 +227,6 @@ export async function getClimateSummary(lat: number, lon: number): Promise<Clima
     ],
   };
 
-  writeCache(cacheKey("climate_summary", { grid_key }), summary);
+  await writeCache(cacheKey("climate_summary", { grid_key }), summary);
   return summary;
 }

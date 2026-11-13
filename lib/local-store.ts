@@ -1,4 +1,5 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { dataPath } from "./paths";
 import { allocate, bucketCounts, type CropOption, type ZoneHolder } from "./zone";
@@ -28,7 +29,10 @@ type Assignment = {
 type StoreFile = { farms: Record<string, Farm>; assignments: Assignment[] };
 
 function storeFile(): string {
-  return process.env.FIELDSHIFT_LOCAL_STORE?.trim() || dataPath("cache", "zone-store.json");
+  const override = process.env.FIELDSHIFT_LOCAL_STORE?.trim();
+  if (override) return override;
+  if (process.env.VERCEL) return path.join(os.tmpdir(), "fieldshift-zone-store.json");
+  return dataPath("cache", "zone-store.json");
 }
 
 function read(): StoreFile {

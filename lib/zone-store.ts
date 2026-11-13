@@ -1,9 +1,14 @@
-import { isDbDown, persistDecision, type PersistInput, type SavedDecision } from "./db";
+import {
+  isDbDown,
+  isPostgresAvailable,
+  markPostgresDown,
+  persistDecision,
+  type PersistInput,
+  type SavedDecision,
+} from "./db";
 import { persistDecisionLocal } from "./local-store";
 
 export type StoreKind = "postgres" | "local";
-
-let pgDownUntil = 0;
 
 /**
  * Save a decision in Postgres when DATABASE_URL is set and the server answers.
@@ -12,13 +17,12 @@ let pgDownUntil = 0;
 export async function saveDecision(
   input: PersistInput
 ): Promise<SavedDecision & { store: StoreKind }> {
-  const hasDb = Boolean(process.env.DATABASE_URL?.trim());
-  if (hasDb && Date.now() > pgDownUntil) {
+  if (isPostgresAvailable()) {
     try {
       return { ...(await persistDecision(input)), store: "postgres" };
     } catch (e) {
       if (!isDbDown(e)) throw e;
-      pgDownUntil = Date.now() + 60_000;
+      markPostgresDown();
       console.warn("[fieldshift db] Postgres unreachable, using local zone store");
     }
   }

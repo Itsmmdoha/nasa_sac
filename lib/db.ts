@@ -14,8 +14,18 @@ let ready: Promise<void> | null = null;
 export function getPool(): Pool {
   const url = process.env.DATABASE_URL?.trim();
   if (!url) throw new Error("DATABASE_URL is not set");
-  if (!pool) pool = new Pool({ connectionString: url, connectionTimeoutMillis: 2500 });
+  if (!pool) pool = new Pool({ connectionString: url, connectionTimeoutMillis: 10000 });
   return pool;
+}
+
+let pgDownUntil = 0;
+
+export function isPostgresAvailable(): boolean {
+  return Boolean(process.env.DATABASE_URL?.trim()) && Date.now() > pgDownUntil;
+}
+
+export function markPostgresDown(): void {
+  pgDownUntil = Date.now() + 60_000;
 }
 
 async function createSchema(): Promise<void> {
@@ -40,6 +50,11 @@ async function createSchema(): Promise<void> {
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (farm_id, season)
   )`);
+  await p.query(`CREATE TABLE IF NOT EXISTS app_cache (
+    key TEXT PRIMARY KEY,
+    value JSONB NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`);
 }
 
 export async function ensureSchema(): Promise<void> {
@@ -54,6 +69,25 @@ export async function ensureSchema(): Promise<void> {
 
 export { farmId };
 
+export async function readDbCache<T>(key: string): Promise<T | null> {
+  await ensureSchema();
+  const { rows } = await getPool().query<{ value: T }>(
+    `SELECT value FROM app_cache WHERE key = $1`,
+    [key]
+  );
+  return rows[0] == null ? null : rows[0].value;
+}
+
+export async function writeDbCache<T>(key: string, value: T): Promise<void> {
+  await ensureSchema();
+  await getPool().query(
+    `INSERT INTO app_cache (key, value, updated_at)
+     VALUES ($1, $2::jsonb, now())
+     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,
+    [key, JSON.stringify(value)]
+  );
+}
+
 export function isDbDown(e: unknown): boolean {
   if (e instanceof AggregateError) return e.errors.some((err) => isDbDown(err));
   const code = (e as { code?: string }).code;
@@ -62,9 +96,14 @@ export function isDbDown(e: unknown): boolean {
     code === "ECONNREFUSED" ||
     code === "ENOTFOUND" ||
     code === "ETIMEDOUT" ||
+    code === "ECONNRESET" ||
+    code === "EPIPE" ||
+    code === "ENETUNREACH" ||
+    code === "EAI_AGAIN" ||
     code === "57P01" ||
     message.includes("DATABASE_URL") ||
-    message.includes("connect")
+    message.includes("connect") ||
+    message.includes("timeout")
   );
 }
 

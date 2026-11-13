@@ -136,7 +136,7 @@ export async function explainAssignment(input: {
   const withBn = (e: Explanation): Explanation => (e.bn ? e : { ...e, bn: templateBn() });
 
   const hash = cacheKey("explain_v2", input.payload);
-  const cached = readCache<Explanation>(hash);
+  const cached = await readCache<Explanation>(hash);
   if (cached) {
     const parsed = explanationSchema.safeParse(cached);
     if (parsed.success) return { explanation: withBn(parsed.data), source: "cache" };
@@ -168,7 +168,7 @@ export async function explainAssignment(input: {
         throw e;
       }
     }
-    writeCache(hash, explanation);
+    await writeCache(hash, explanation);
     return { explanation: withBn(explanation), source: "groq", fallback_reason: reason };
   } catch (e) {
     const status = errorStatus(e);
